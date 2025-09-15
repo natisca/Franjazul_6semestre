@@ -1,0 +1,80 @@
+/* Animación de partículas */
+.spray-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(59, 130, 246, 0.6);
+  border-radius: 50%;
+  animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+/* Icono flotante */
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Inputs y botones */
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 8px;
+  background: var(--input, #fff);
+}
+.btn {
+  background: var(--primary, #3b82f6);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.btn:hover {
+  background: #2563eb;
+}
+
+/* Card */
+.card {
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+}
+.card-header {
+  margin-bottom: 1rem;
+}
+.card-content {
+  margin-top: 1rem;
+}
+
+/* Iconos "bug" */
+.bug-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url('/assets/bug.svg') no-repeat center center;
+  background-size: contain;
+}
+.bug-icon.big {
+  width: 32px;
+  height: 32px;
+}

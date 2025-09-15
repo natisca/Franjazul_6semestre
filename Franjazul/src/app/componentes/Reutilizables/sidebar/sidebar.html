@@ -1,1 +1,98 @@
-<p>sidebar works!</p>
+<div
+  class="h-screen bg-gray-900 text-white shadow-lg border-r border-gray-800 flex flex-col transition-all duration-300"
+  [class.w-16]="isCollapsed"
+  [class.w-64]="!isCollapsed"
+>
+  <!-- Botón toggle -->
+  <button
+    (click)="toggleSidebar()"
+    class="absolute -right-3 top-6 z-10 h-6 w-6 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shadow-md"
+  >
+    <i class="text-xs" [class.lucide-chevron-right]="isCollapsed" [class.lucide-chevron-left]="!isCollapsed"></i>
+  </button>
+
+  <!-- Header -->
+  <div class="p-4 border-b border-gray-800">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="lucide-bug text-white"></i>
+      </div>
+      <div *ngIf="!isCollapsed">
+        <h2 class="font-bold text-sm">FranjAzul</h2>
+        <p class="text-xs text-gray-400">Sistema de Gestión</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menú navegación -->
+  <nav class="flex-1 p-4 space-y-2">
+    <a
+      *ngFor="let item of menuItem"
+      [routerLink]="item.route"
+      class="flex items-center gap-3 h-10 px-2 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition"
+      [ngClass]="{ 'justify-center': isCollapsed, 'px-3': !isCollapsed }"
+    >
+      <i class="lucide" [ngClass]="'lucide-' + item.icon"></i>
+      <span *ngIf="!isCollapsed" class="text-sm font-medium">{{ item.label }}</span>
+    </a>
+  </nav>
+
+  <div class="border-t border-gray-800"></div>
+
+  <!-- Perfil -->
+  <div class="p-4 space-y-4">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center overflow-hidden flex-shrink-0">
+        <img
+          *ngIf="userAvatar"
+          [src]="userAvatar"
+          [alt]="userName"
+          class="h-full w-full object-cover"
+        />
+        <ng-template #fallback>
+          <span class="text-xs font-bold">{{ initials }}</span>
+        </ng-template>
+      </div>
+
+      <div *ngIf="!isCollapsed" class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ userName }}</p>
+        <p class="text-xs text-gray-400 truncate">{{ userRol }}</p>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div *ngIf="!isCollapsed" class="space-y-2">
+      <a
+        routerLink="/profile"
+        class="flex items-center gap-3 h-9 px-3 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition"
+      >
+        <i class="lucide-user"></i>
+        <span class="text-sm">Mi Cuenta</span>
+      </a>
+
+      <button
+        (click)="handleLogout()"
+        class="flex items-center gap-3 h-9 px-3 w-full rounded-md text-red-400 hover:bg-red-500/10 hover:text-red-500 transition"
+      >
+        <i class="lucide-log-out"></i>
+        <span class="text-sm">Cerrar Sesión</span>
+      </button>
+    </div>
+
+    <div *ngIf="isCollapsed" class="flex flex-col gap-2">
+      <a
+        routerLink="/profile"
+        class="flex items-center justify-center h-8 w-full rounded-md text-gray-200 hover:bg-gray-800"
+      >
+        <i class="lucide-user"></i>
+      </a>
+
+      <button
+        (click)="handleLogout()"
+        class="flex items-center justify-center h-8 w-full rounded-md text-red-400 hover:bg-red-500/10"
+      >
+        <i class="lucide-log-out"></i>
+      </button>
+    </div>
+  </div>
+</div>

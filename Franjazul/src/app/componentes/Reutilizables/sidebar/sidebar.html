@@ -1,97 +1,110 @@
 <div
-  class="h-screen bg-gray-900 text-white shadow-lg border-r border-gray-800 flex flex-col transition-all duration-300"
-  [class.w-16]="isCollapsed"
-  [class.w-64]="!isCollapsed"
->
+  class="h-screen bg-white text-blue-800 shadow-lg border-r border-blue-800 flex flex-col transition-all duration-300"
+  [class.w-16]="isCollapsed" [class.w-64]="!isCollapsed">
   <!-- Botón toggle -->
-  <button
-    (click)="toggleSidebar()"
-    class="absolute -right-3 top-6 z-10 h-6 w-6 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shadow-md"
-  >
-    <i class="text-xs" [class.lucide-chevron-right]="isCollapsed" [class.lucide-chevron-left]="!isCollapsed"></i>
+  <button (click)="toggleSidebar()"
+    class="relative -right-61 top-20 z-10 h-6 w-6 rounded-full bg-white border border-blue-800 flex items-center justify-center shadow-md">
+    <svg *ngIf="isCollapsed" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+      stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+    <svg *ngIf="!isCollapsed" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+      stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
   </button>
 
   <!-- Header -->
-  <div class="p-4 border-b border-gray-800">
+  <div class="p-4 border-b border-blue-800">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-        <i class="lucide-bug text-white"></i>
+      <div class="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
+        <!-- Icono bug -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0 1 12 12.75Zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 0 1-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 0 0 2.248-2.354M12 12.75a2.25 2.25 0 0 1-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 0 0-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 0 1 .4-2.253M12 8.25a2.25 2.25 0 0 0-2.248 2.146M12 8.25a2.25 2.25 0 0 1 2.248 2.146M8.683 5a6.032 6.032 0 0 1-1.155-1.002c.07-.63.27-1.222.574-1.747m.581 2.749A3.75 3.75 0 0 1 15.318 5m0 0c.427-.283.815-.62 1.155-.999a4.471 4.471 0 0 0-.575-1.752M4.921 6a24.048 24.048 0 0 0-.392 3.314c1.668.546 3.416.914 5.223 1.082M19.08 6c.205 1.08.337 2.187.392 3.314a23.882 23.882 0 0 1-5.223 1.082" />
+        </svg>
+
       </div>
       <div *ngIf="!isCollapsed">
         <h2 class="font-bold text-sm">FranjAzul</h2>
-        <p class="text-xs text-gray-400">Sistema de Gestión</p>
+        <p class="text-xs text-black">Sistema de Gestión</p>
       </div>
     </div>
   </div>
 
   <!-- Menú navegación -->
   <nav class="flex-1 p-4 space-y-2">
-    <a
-      *ngFor="let item of menuItem"
-      [routerLink]="item.route"
-      class="flex items-center gap-3 h-10 px-2 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition"
-      [ngClass]="{ 'justify-center': isCollapsed, 'px-3': !isCollapsed }"
-    >
-      <i class="lucide" [ngClass]="'lucide-' + item.icon"></i>
+    <a *ngFor="let item of menuItem" [routerLink]="item.route"
+      class="flex items-center gap-3 h-10 px-2 rounded-md text-blue-800 hover:bg-blue-800 hover:text-white transition"
+      [ngClass]="{ 'justify-center': isCollapsed, 'px-3': !isCollapsed }">
+      <!-- Heroicons dinámicos -->
+      <ng-container [ngSwitch]="item.icon">
+        <svg *ngSwitchCase="'home'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75l9-7.5 9 7.5M4.5 10.5V21h15V10.5" />
+        </svg>
+
+        <svg *ngSwitchCase="'table-cells'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v18H3zM3 9h18M9 3v18" />
+        </svg>
+
+        <svg *ngSwitchCase="'document-text'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+          viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 6h9M7.5 9h9M9 12h6m3 0v9H6V3h9l6 6z" />
+        </svg>
+
+        <svg *ngSwitchCase="'cog-6-tooth'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+      </ng-container>
+
+
       <span *ngIf="!isCollapsed" class="text-sm font-medium">{{ item.label }}</span>
     </a>
   </nav>
 
-  <div class="border-t border-gray-800"></div>
-
-  <!-- Perfil -->
+  <!-- Footer perfil -->
+  <div class="border-t border-blue-800"></div>
   <div class="p-4 space-y-4">
     <div class="flex items-center gap-3">
-      <div class="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center overflow-hidden flex-shrink-0">
-        <img
-          *ngIf="userAvatar"
-          [src]="userAvatar"
-          [alt]="userName"
-          class="h-full w-full object-cover"
-        />
-        <ng-template #fallback>
-          <span class="text-xs font-bold">{{ initials }}</span>
-        </ng-template>
+      <div class="h-8 w-8 rounded-lg bg-blue-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+        <img *ngIf="userAvatar" [src]="userAvatar" [alt]="userName" class="h-full w-full object-cover" />
+        <span *ngIf="!userAvatar" class="text-xs font-bold text-white">{{ initials }}</span>
       </div>
 
       <div *ngIf="!isCollapsed" class="flex-1 min-w-0">
         <p class="text-sm font-medium truncate">{{ userName }}</p>
-        <p class="text-xs text-gray-400 truncate">{{ userRol }}</p>
+        <p class="text-xs text-black truncate">{{ userRol }}</p>
       </div>
     </div>
 
     <!-- Acciones -->
     <div *ngIf="!isCollapsed" class="space-y-2">
-      <a
-        routerLink="/profile"
-        class="flex items-center gap-3 h-9 px-3 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition"
-      >
-        <i class="lucide-user"></i>
+      <a routerLink="/profile"
+        class="flex items-center gap-3 h-9 px-3 rounded-md text-blue-800 hover:bg-blue-800 hover:text-white transition">
+        <!-- user icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5a8.25 8.25 0 1115 0H4.5z" />
+        </svg>
         <span class="text-sm">Mi Cuenta</span>
       </a>
 
-      <button
-        (click)="handleLogout()"
-        class="flex items-center gap-3 h-9 px-3 w-full rounded-md text-red-400 hover:bg-red-500/10 hover:text-red-500 transition"
-      >
-        <i class="lucide-log-out"></i>
+      <button (click)="handleLogout()"
+        class="flex items-center gap-3 h-9 px-3 w-full rounded-md text-red-400   hover:bg-red-500/10 transition">
+        <!-- logout -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H3" />
+        </svg>
         <span class="text-sm">Cerrar Sesión</span>
-      </button>
-    </div>
-
-    <div *ngIf="isCollapsed" class="flex flex-col gap-2">
-      <a
-        routerLink="/profile"
-        class="flex items-center justify-center h-8 w-full rounded-md text-gray-200 hover:bg-gray-800"
-      >
-        <i class="lucide-user"></i>
-      </a>
-
-      <button
-        (click)="handleLogout()"
-        class="flex items-center justify-center h-8 w-full rounded-md text-red-400 hover:bg-red-500/10"
-      >
-        <i class="lucide-log-out"></i>
       </button>
     </div>
   </div>

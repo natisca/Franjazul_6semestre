@@ -1,7 +1,6 @@
-import { Component, Input, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { isFormControl } from '@angular/forms';
 
 interface MenuItem {
   icon: string;
@@ -11,23 +10,23 @@ interface MenuItem {
 
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
   imports: [CommonModule, RouterModule, NgIf],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css'
+  styleUrls: ['./sidebar.css']
 })
-
 export class Sidebar {
-  @Input() userName: String = 'Yo';
-  @Input() userRol: String = 'Probando';
-  @Input() userAvatar?: String;
+  @Input() userName: string = 'Yo';
+  @Input() userRol: string = 'Probando';
+  @Input() userAvatar?: string;
 
   isCollapsed = false;
 
   menuItem: MenuItem[] = [
     { icon: 'home', label: 'Dashboard', route: '/' },
-    { icon: 'table', label: 'Tablas', route: '/' },
-    { icon: 'file-text', label: 'Reportes', route: '/' },
-    { icon: 'settings', label: 'Configuracion', route: '/' },
+    { icon: 'table-cells', label: 'Tablas', route: '/' },
+    { icon: 'document-text', label: 'Reportes', route: '/' },
+    { icon: 'cog-6-tooth', label: 'Configuración', route: '/' },
   ];
 
   toggleSidebar() {
@@ -36,15 +35,13 @@ export class Sidebar {
 
   handleLogout() {
     console.log('saliendo');
-    //Metodo cuando le ponga funcionalidad
   }
 
   get initials(): string {
     return this.userName
-      .split('')
+      .split(' ')
       .map(n => n[0])
       .join('')
       .toUpperCase();
   }
-
 }

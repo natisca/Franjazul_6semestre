@@ -1,8 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
-
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 interface Particle {
   id: number;
@@ -12,13 +10,12 @@ interface Particle {
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [NgFor, NgIf, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
-
-
-export class login implements OnInit, OnDestroy {
+export class Login implements OnInit, OnDestroy {
   loginForm: FormGroup;
   showPassword: boolean = false;
   particles: Particle[] = [];
@@ -33,10 +30,9 @@ export class login implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Crear animación de partículas
     this.intervalId = setInterval(() => {
       this.particles = [
-        ...this.particles.slice(-4), // conservar últimas 4 partículas
+        ...this.particles.slice(-4),
         {
           id: Date.now(),
           x: Math.random() * 300,

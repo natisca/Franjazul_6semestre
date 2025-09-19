@@ -2,12 +2,13 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Login } from "./componentes/Autenticacion/login/login";
 import { Sidebar } from "./componentes/Reutilizables/sidebar/sidebar";
+import { Header } from './componentes/Reutilizables/header/header';
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Login, Sidebar],
+  imports: [RouterOutlet, Login, Sidebar, Header],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

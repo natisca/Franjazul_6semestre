@@ -1,1 +1,85 @@
-<p>home works!</p>
+<section id="servicios" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center space-y-4 mb-16">
+      <h2 class="text-3xl lg:text-4xl font-bold text-blue-950">
+        Nuestros Servicios Profesionales
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Ofrecemos soluciones integrales para el control de plagas con tecnología
+        avanzada y productos certificados que garantizan resultados efectivos y
+        duraderos.
+      </p>
+    </div>
+
+    <!-- Estilos y Contenidos de tarjetas -->
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        *ngFor="let service of services"
+        class="flex flex-col bg-white border border-gray-400 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+      >
+        <!-- Imagen con ícono -->
+        <div class="relative">
+          <img
+            [src]="service.image"
+            [alt]="service.title"
+            class="w-full h-44 object-cover"
+          />
+        </div>
+
+        <!-- Contenido -->
+        <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-100">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-semibold text-blue-950">
+                {{ service.title }}
+              </h3>
+              <span
+                class="bg-gray-300 text-blue-700 text-xs px-2 py-1 rounded-md"
+              >
+                {{ service.price }}
+              </span>
+            </div>
+            <p class="text-gray-600 text-sm">{{ service.description }}</p>
+          </div>
+
+          <!-- Features -->
+          <div class="flex flex-wrap gap-2 mt-4">
+            <span
+              *ngFor="let feature of service.features"
+              class="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-md"
+            >
+              {{ feature }}
+            </span>
+          </div>
+
+          <!-- Botón -->
+          <button
+            class="mt-6 w-full bg-blue-900 hover:bg-blue-800 text-white rounded-md py-2 font-medium transition-colors"
+          >
+            Solicitar Servicio
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta del fondo -->
+    <div class="text-center mt-16">
+      <div class="bg-blue-100 rounded-2xl p-8 border border-gray-400 shadow-sm">
+        <h3 class="text-2xl font-bold text-blue-950 mb-4">
+          ¿Necesitas una solución personalizada?
+        </h3>
+        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+          Nuestro equipo de expertos puede diseñar un plan de control de plagas
+          específico para tus necesidades. Contáctanos para una evaluación
+          gratuita.
+        </p>
+        <button
+          class="bg-blue-900 hover:bg-blue-800 text-white rounded-md px-6 py-3 font-medium transition-colors"
+        >
+          Contactar Especialista
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

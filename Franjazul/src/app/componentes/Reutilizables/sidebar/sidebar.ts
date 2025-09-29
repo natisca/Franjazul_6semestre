@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 interface MenuItem {
@@ -11,7 +11,7 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIf],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css']
 })
@@ -21,6 +21,7 @@ export class Sidebar {
   @Input() userAvatar?: string;
 
   isCollapsed = false;
+  private isAnimating = false;
 
   menuItem: MenuItem[] = [
     { icon: 'home', label: 'Dashboard', route: '/' },
@@ -29,12 +30,21 @@ export class Sidebar {
     { icon: 'cog-6-tooth', label: 'Configuración', route: '/' },
   ];
 
+
   toggleSidebar() {
+    if (this.isAnimating) return; 
+    
+    this.isAnimating = true;
     this.isCollapsed = !this.isCollapsed;
+    
+    setTimeout(() => {
+      this.isAnimating = false;
+    }, 300);
   }
 
   handleLogout() {
     console.log('saliendo');
+    // Logica del logout
   }
 
   get initials(): string {
@@ -44,4 +54,5 @@ export class Sidebar {
       .join('')
       .toUpperCase();
   }
+ 
 }

@@ -2,8 +2,10 @@
   class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-500 flex items-center justify-center p-4 relative overflow-hidden">
   <!-- Partículas -->
   <div class="absolute inset-0 pointer-events-none">
-    <div *ngFor="let particle of particles" class="spray-particle" [style.left.px]="particle.x"
-      [style.top.px]="particle.y"></div>
+    @for (particle of particles; track $index) {
+    <div [id]="'particle'+particle.id" class="spray-particle" [style.left.px]="particle.x" [style.top.px]="particle.y"></div>
+    }
+
   </div>
 
   <!-- Icono flotante -->

@@ -1,1 +1,33 @@
-<p>perfiles works!</p>
+<div class="p-6">
+    <div class="flex items-center mb-4">
+        <h1 class="text-2xl font-bold text-blue-900">Perfiles</h1>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border-gray-200 rounded-lg shadow-sm">
+            <thead class="bg-blue-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">ID</th>
+                    <th class="px-4 py-2 text-left">Nombre</th>
+                    <th class="px-4 py-2 text-left">Descripcion</th>
+                    <th class="px-4 py-2 text-left">Rol del Perfil</th>
+                    <th class="px-4 py-2 text-left">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of perfiles" class="border-t">
+                    <td class="px-4 py-2">{{p.ID_per}}</td>
+                    <td class="px-4 py-2">{{p.nombre_per}}</td>
+                    <td class="px-4 py-2">{{p.descripcion_per}}</td>
+                    <td class="px-4 py-2">{{p.ID_rol_en_per}}</td>
+                    <td class="px-4 py-2 text-center">
+                        <button (click)="eliminarPerfil(p.ID_per)"
+                            class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-500">
+                            🗑 Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

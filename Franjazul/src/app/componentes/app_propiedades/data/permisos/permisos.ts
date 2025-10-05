@@ -11,16 +11,18 @@ import { RouterModule } from '@angular/router';
 })
 
 export class Permisos {
-  ID_per:number = 0;
-  nombre_per:string = '';
-  descripcion_per:string = '';
-  ID_rol_en_per:number= 0;
 
-  permisos: Permisos[] = [];
+  ID_per_en_perm:number = 0;
+  ID_form_en_perm:number = 0;
+  Puede_crear:number = 0;
+  puede_borrar:number = 0;
+  puede_editar:number = 0;
+  puede_leer:number = 0;
 
-  eliminarPermiso(id:number){
-    this.permisos = this.permisos.filter(p => p.ID_per !== id);
+  permisos:Permisos[] = [];
+  
+  eliminarPermiso(id:number, id2:number){
+    this.permisos = this.permisos.filter(p => p.ID_per_en_perm !== id && p.ID_form_en_perm !== id2);
   }
-
+  
 }
-

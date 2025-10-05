@@ -10,12 +10,15 @@ import { Tablas } from "./componentes/Negocio/tablas/tablas";
 import { Usuarios } from "./componentes/app_propiedades/data/usuarios/usuarios";
 import { Permisos } from "./componentes/app_propiedades/data/permisos/permisos";
 import { Roles } from './componentes/app_propiedades/data/roles/roles';
+import { Perfiles } from "./componentes/app_propiedades/data/perfiles/perfiles";
+import { Cargos } from "./componentes/app_propiedades/data/cargos/cargos";
+import { Formularios } from "./componentes/app_propiedades/data/formularios/formularios";
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Login, Sidebar, Header, home, Footer, Dashboard, Tablas, Usuarios, Permisos, Roles],
+  imports: [RouterOutlet, Login, Sidebar, Header, home, Footer, Dashboard, Tablas, Usuarios, Permisos, Roles, Perfiles, Cargos, Formularios],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

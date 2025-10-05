@@ -7,21 +7,25 @@
         <table class="min-w-full bg-white border-gray-200 rounded-lg shadow-sm">
             <thead class="bg-blue-100">
                 <tr>
-                    <th class="px-4 py-2 text-left">ID</th>
-                    <th class="px-4 py-2 text-left">Nombre</th>
-                    <th class="px-4 py-2 text-left">Descripcion</th>
-                    <th class="px-4 py-2 text-left">Rol del Perfil</th>
+                    <th class="px-4 py-2 text-left">Perfil del Permiso</th>
+                    <th class="px-4 py-2 text-left">Formulario del permiso</th>
+                    <th class="px-4 py-2 text-left">Crear</th>
+                    <th class="px-4 py-2 text-left">Borrar</th>
+                    <th class="px-4 py-2 text-left">Editar</th>
+                    <th class="px-4 py-2 text-left">Leer</th>
                     <th class="px-4 py-2 text-left">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let p of permisos" class="border-t">
-                    <td class="px-4 py-2">{{p.ID_per}}</td>
-                    <td class="px-4 py-2">{{p.nombre_per}}</td>
-                    <td class="px-4 py-2">{{p.descripcion_per}}</td>
-                    <td class="px-4 py-2">{{p.ID_rol_en_per}}</td>
+                    <td class="px-4 py-2">{{p.ID_per_en_perm}}</td>
+                    <td class="px-4 py-2">{{p.ID_form_en_perm}}</td>
+                    <td class="px-4 py-2">{{p.Puede_crear}}</td>
+                    <td class="px-4 py-2">{{p.puede_borrar}}</td>
+                    <td class="px-4 py-2">{{p.puede_editar}}</td>
+                    <td class="px-4 py-2">{{p.puede_leer}}</td>
                     <td class="px-4 py-2 text-center">
-                        <button (click)="eliminarPermiso(p.ID_per)"
+                        <button (click)="eliminarPermiso(p.ID_per_en_perm, p.ID_form_en_perm)"
                             class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-500">
                             🗑 Eliminar
                         </button>

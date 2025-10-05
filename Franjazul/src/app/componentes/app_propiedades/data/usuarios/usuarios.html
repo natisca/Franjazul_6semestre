@@ -1,1 +1,62 @@
-<p>usuarios works!</p>
+<div class="p-6">
+    <div class="flex items-center mb-4">
+        <h1 class="text-2xl font-bold text-blue-900">Usuarios</h1>
+    </div>
+
+
+    <!-- Barra de búsqueda -->
+    <div class="flex gap-2 mb-4">
+        <input type="text" placeholder="Buscar..." />
+        <button class="px-4 py-2 bg-blue-200 text-black rounded-lg hover:bg-gray-300">Buscar</button>
+        <div class="flex gap-2">
+            <a routerLink="/tablas" class="px-4 py-2 bg-blue-200 hover:bg-gray-300 text-black rounded-lg">⬅ Volver</a>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+            <thead class="bg-blue-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">ID</th>
+                    <th class="px-4 py-2 text-left">Nombre</th>
+                    <th class="px-4 py-2 text-left">Apellido</th>
+                    <th class="px-4 py-2 text-left">Apellido2</th>
+                    <th class="px-4 py-2 text-left">Correo</th>
+                    <th class="px-4 py-2 text-left">Telefono</th>
+                    <th class="px-4 py-2 text-left">Perfil</th>
+                    <th class="px-4 py-2 text-left">Cargo</th>
+                    <th class="px-4 py-2 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let usuario of UsuariosFiltrados" class="border-t">
+                    <td class="px-4 py-2">{{ usuario.ID_usuario }}</td>
+                    <td class="px-4 py-2">{{ usuario.nombre_us }}</td>
+                    <td class="px-4 py-2">{{ usuario.apellido_us }}</td>
+                    <td class="px-4 py-2">{{ usuario.apellido2_us }}</td>
+                    <td class="px-4 py-2">{{ usuario.email_us }}</td>
+                    <td class="px-4 py-2">{{ usuario.telefono_us }}</td>
+                    <td class="px-4 py-2">{{ usuario.perfil_de_usuario }}</td>
+                    <td class="px-4 py-2">{{ usuario.cargo_de_usuario }}</td>
+                    <td class="px-4 py-2 text-center">
+                        <button (click)="eliminarUsuario(usuario.ID_usuario)"
+                            class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-500">
+                            🗑 Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="flex justify-between items-center mt-4">
+        <button (click)="anteriorPagina()" [disabled]="paginaActual === 0"
+            class="px-4 py-2 bg-blue-200 hover:bg-gray-300 text-black rounded-lg disabled:opacity-50">⬅
+            Anterior</button>
+        <span>Página {{ paginaActual + 1 }}</span>
+        <button (click)="siguientePagina()"
+            class="px-4 py-2 bg-blue-200 hover:bg-gray-300 text-black rounded-lg">Siguiente ➡</button>
+    </div>
+</div>

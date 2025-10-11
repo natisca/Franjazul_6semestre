@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ServiceForm } from '../service-form/service-form';
 
 interface Service {
   icon: string;
@@ -13,11 +14,14 @@ interface Service {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ServiceForm],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 export class home {
+
+  mostrarForm = false;
+
   services: Service[] = [
     {
       icon: 'bug-ant',
@@ -68,4 +72,13 @@ export class home {
       price: 'Desde $250.000',
     },
   ];
+
+  abrirForm(){
+    this.mostrarForm = true;
+  }
+
+  cerrarForm(){
+    this.mostrarForm = false;
+  }
+
 }

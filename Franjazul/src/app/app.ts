@@ -13,12 +13,13 @@ import { Roles } from './componentes/app_propiedades/data/roles/roles';
 import { Perfiles } from "./componentes/app_propiedades/data/perfiles/perfiles";
 import { Cargos } from "./componentes/app_propiedades/data/cargos/cargos";
 import { Formularios } from "./componentes/app_propiedades/data/formularios/formularios";
+import { ServiceForm } from "./componentes/Negocio/service-form/service-form";
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Login, Sidebar, Header, home, Footer, Dashboard, Tablas, Usuarios, Permisos, Roles, Perfiles, Cargos, Formularios],
+  imports: [RouterOutlet, Login, Sidebar, Header, home, Footer, Dashboard, Tablas, Usuarios, Permisos, Roles, Perfiles, Cargos, Formularios, ServiceForm],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

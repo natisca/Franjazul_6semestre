@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -23,11 +23,14 @@ export class Sidebar {
   isCollapsed = false;
   private isAnimating = false;
 
+  //Con esto, se le indica al layout cuando se mueve el sidebar
+  @Output() sidebarToggled = new EventEmitter<boolean>();
+
   menuItem: MenuItem[] = [
-    { icon: 'home', label: 'Dashboard', route: '/' },
-    { icon: 'table-cells', label: 'Tablas', route: '/' },
+    { icon: 'home', label: 'Dashboard', route: '/dashboard' },
+    { icon: 'table-cells', label: 'Tablas', route: '/tablas' },
     { icon: 'document-text', label: 'Reportes', route: '/' },
-    { icon: 'cog-6-tooth', label: 'Configuración', route: '/' },
+    { icon: 'calendar', label: 'Citas', route: '/appointments' },
   ];
 
 
@@ -36,6 +39,9 @@ export class Sidebar {
     
     this.isAnimating = true;
     this.isCollapsed = !this.isCollapsed;
+    
+    // Envia el estado del sidebar al layout
+    this.sidebarToggled.emit(this.isCollapsed);
     
     setTimeout(() => {
       this.isAnimating = false;
@@ -53,6 +59,10 @@ export class Sidebar {
       .map(n => n[0])
       .join('')
       .toUpperCase();
+  }
+
+  get sidebarWidth(): number {
+    return this.isCollapsed ? 68 : 220;
   }
  
 }

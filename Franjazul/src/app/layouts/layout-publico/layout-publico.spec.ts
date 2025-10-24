@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Agendamiento } from './agendamiento';
+import { LayoutPublico } from './layout-publico';
 
-describe('Agendamiento', () => {
-  let component: Agendamiento;
-  let fixture: ComponentFixture<Agendamiento>;
+describe('LayoutPublico', () => {
+  let component: LayoutPublico;
+  let fixture: ComponentFixture<LayoutPublico>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Agendamiento]
+      imports: [LayoutPublico]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Agendamiento);
+    fixture = TestBed.createComponent(LayoutPublico);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

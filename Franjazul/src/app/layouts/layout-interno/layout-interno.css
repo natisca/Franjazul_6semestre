@@ -1,0 +1,30 @@
+/* Layout interno - Estilos base */
+
+/* Asegurar que el contenido principal tenga el espacio correcto */
+main {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Suavizar la transición del margen cuando el sidebar se colapsa/expande */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Mejorar el scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Evitar el overflow horizontal */
+body {
+  overflow-x: hidden;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  /* En móviles, el sidebar podría ocultarse completamente */
+  /* Esto es opcional, puedes ajustarlo según tus necesidades */
+}

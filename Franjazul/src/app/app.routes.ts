@@ -15,7 +15,7 @@ import { ServiceForm } from './componentes/Negocio/service-form/service-form';
 //importes del layout interno
 
 import { Dashboard } from './componentes/Negocio/dashboard/dashboard';
-import { Login } from './componentes/Autenticacion/login/login';
+import { Login } from './componentes/autenticacion/login/login';
 import { Tablas } from './componentes/Negocio/tablas/tablas';
 import { Usuarios } from './componentes/app_propiedades/data/usuarios/usuarios';
 import { Permisos } from './componentes/app_propiedades/data/permisos/permisos';

@@ -1,5 +1,8 @@
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
+<<<<<<< HEAD
+export const routes: Routes = [];
+=======
 //importes de los layouts
 
 import { LayoutPublico } from './layouts/layout-publico/layout-publico';
@@ -68,3 +71,4 @@ export const routes: Routes = [
     }
 
 ];
+>>>>>>> Pablo

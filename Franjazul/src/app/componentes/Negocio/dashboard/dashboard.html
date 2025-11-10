@@ -1,14 +1,44 @@
+<!-- src/app/dashboard/dashboard.component.html -->
+
 <div class="p-6 bg-gray-50 min-h-screen">
-  <!-- Título -->
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-blue-900">Dashboard Principal</h1>
-    <p class="text-gray-600">Resumen general de FranjAzul</p>
+  <!-- Título y botón de recarga -->
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-blue-900">Dashboard Principal</h1>
+      <p class="text-gray-600">Resumen general de FranjAzul</p>
+    </div>
+    <button 
+      (click)="recargarDatos()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      Actualizar
+    </button>
   </div>
 
   <!-- Tarjetas estadísticas -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Loading skeleton si está cargando -->
+    <div *ngIf="cargandoStats" class="col-span-full">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div *ngFor="let i of [1,2,3,4]" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 animate-pulse">
+          <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+          <div class="h-8 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error al cargar -->
+    <div *ngIf="errorStats && !cargandoStats" class="col-span-full">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+        Error al cargar las estadísticas. Por favor, intenta de nuevo.
+      </div>
+    </div>
+
     <!-- Citas completadas -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div *ngIf="stats && !cargandoStats" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div class="flex justify-between items-start mb-3">
         <h2 class="font-semibold text-gray-700 text-sm">Citas Completadas</h2>
         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -17,12 +47,15 @@
           </svg>
         </div>
       </div>
-      <p class="text-3xl font-bold text-blue-900 mb-1">{{ citasCompletadas }}%</p>
-      <p class="text-green-600 text-sm font-medium">↑ +12% vs mes anterior</p>
+      <p class="text-3xl font-bold text-blue-900 mb-1">{{ stats.porcentajeCompletadas | number:'1.0-0' }}%</p>
+      <p [class]="esVariacionPositiva(stats.variacionMesAnterior) ? 'text-green-600' : 'text-red-600'" class="text-sm font-medium">
+        {{ esVariacionPositiva(stats.variacionMesAnterior) ? '↑' : '↓' }} 
+        {{ formatearVariacion(stats.variacionMesAnterior) }}% vs mes anterior
+      </p>
     </div>
 
     <!-- Citas pendientes -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div *ngIf="stats && !cargandoStats" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div class="flex justify-between items-start mb-3">
         <h2 class="font-semibold text-gray-700 text-sm">Citas Pendientes</h2>
         <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -31,12 +64,12 @@
           </svg>
         </div>
       </div>
-      <p class="text-3xl font-bold text-blue-900 mb-1">{{ citasPendientes }}</p>
+      <p class="text-3xl font-bold text-blue-900 mb-1">{{ stats.citasPendientes }}</p>
       <p class="text-gray-600 text-sm">Programadas para esta semana</p>
     </div>
 
     <!-- Servicios activos -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div *ngIf="stats && !cargandoStats" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div class="flex justify-between items-start mb-3">
         <h2 class="font-semibold text-gray-700 text-sm">Servicios Activos</h2>
         <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -45,46 +78,70 @@
           </svg>
         </div>
       </div>
-      <p class="text-3xl font-bold text-blue-900 mb-1">{{ serviciosActivos }}</p>
-      <p class="text-green-600 text-sm font-medium">↑ +8% este mes</p>
+      <p class="text-3xl font-bold text-blue-900 mb-1">{{ stats.serviciosActivos }}</p>
+      <p class="text-gray-600 text-sm">En citas no canceladas</p>
     </div>
 
-    <!-- Alertas -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <!-- Certificados -->
+    <div *ngIf="stats && !cargandoStats" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div class="flex justify-between items-start mb-3">
-        <h2 class="font-semibold text-gray-700 text-sm">Alertas</h2>
-        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        <h2 class="font-semibold text-gray-700 text-sm">Certificados</h2>
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
           </svg>
         </div>
       </div>
-      <p class="text-3xl font-bold text-blue-900 mb-1">{{ alertas }}</p>
-      <p class="text-gray-600 text-sm">Requieren atención inmediata</p>
+      <p class="text-3xl font-bold text-blue-900 mb-1">{{ stats.certificadosVigentes }}</p>
+      <p class="text-gray-600 text-sm">
+        Vigentes / <span class="text-red-600">{{ stats.certificadosVencidos }} vencidos</span>
+      </p>
     </div>
   </div>
 
   <!-- Secciones inferiores -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Indicadores -->
+    <!-- Indicadores de cumplimiento -->
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
       <h2 class="font-semibold text-blue-900 text-lg mb-2">Indicadores de Cumplimiento</h2>
       <p class="text-sm text-gray-600 mb-6">
         Porcentaje de cumplimiento por tipo de servicio
       </p>
 
-      <div class="space-y-5">
+      <!-- Loading -->
+      <div *ngIf="cargandoIndicadores" class="space-y-5">
+        <div *ngFor="let i of [1,2,3]" class="animate-pulse">
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="w-full bg-gray-200 rounded-full h-3"></div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="errorIndicadores && !cargandoIndicadores" class="text-red-600 text-sm">
+        Error al cargar indicadores
+      </div>
+
+      <!-- Datos -->
+      <div *ngIf="!cargandoIndicadores && !errorIndicadores" class="space-y-5">
         <div *ngFor="let ind of indicadores">
           <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
-            <span>{{ ind.nombre }}</span>
-            <span class="text-blue-900 font-semibold">{{ ind.valor }}%</span>
+            <span>{{ ind.nombreServicio }}</span>
+            <span class="text-blue-900 font-semibold">{{ ind.porcentajeCumplimiento | number:'1.0-0' }}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div
               class="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-500 ease-out"
-              [style.width.%]="ind.valor"
+              [style.width.%]="ind.porcentajeCumplimiento"
             ></div>
           </div>
+          <p class="text-xs text-gray-500 mt-1">
+            {{ ind.completadas }} de {{ ind.totalVecesSolicitado }} completadas
+          </p>
+        </div>
+
+        <!-- Mensaje si no hay datos -->
+        <div *ngIf="indicadores.length === 0" class="text-center text-gray-500 py-8">
+          No hay indicadores disponibles
         </div>
       </div>
     </div>
@@ -96,41 +153,57 @@
         Las 5 citas más cercanas programadas
       </p>
 
-      <div class="space-y-3">
+      <!-- Loading -->
+      <div *ngIf="cargandoCitas" class="space-y-3">
+        <div *ngFor="let i of [1,2,3]" class="bg-gray-50 rounded-lg border border-gray-200 p-4 animate-pulse">
+          <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="errorCitas && !cargandoCitas" class="text-red-600 text-sm">
+        Error al cargar próximas citas
+      </div>
+
+      <!-- Datos -->
+      <div *ngIf="!cargandoCitas && !errorCitas" class="space-y-3 max-h-96 overflow-y-auto">
         <div
           *ngFor="let cita of proximasCitas"
           class="bg-gray-50 rounded-lg border border-gray-200 p-4 hover:border-blue-300 hover:shadow-sm transition-all"
         >
           <div class="flex justify-between items-start mb-2">
-            <h3 class="font-semibold text-blue-900">{{ cita.cliente }}</h3>
+            <h3 class="font-semibold text-blue-900">{{ cita.lugar }}</h3>
             <span
               class="px-3 py-1 text-xs font-medium rounded-full"
-              [ngClass]="{
-                'bg-blue-100 text-blue-700': cita.estado === 'Programada',
-                'bg-yellow-100 text-yellow-700': cita.estado === 'Pendiente'
-              }"
+              [ngClass]="obtenerClaseEstado(cita.estado)"
             >
               {{ cita.estado }}
             </span>
           </div>
-          <p class="text-sm text-gray-700 mb-2">{{ cita.tipo }}</p>
+          <p class="text-sm text-gray-700 mb-2">{{ cita.servicios || 'Sin servicios asignados' }}</p>
           <div class="flex items-center gap-4 text-xs text-gray-500">
             <span class="flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
-              {{ cita.fecha }}
+              {{ cita.fechaFormato }}
             </span>
             <span class="flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              {{ cita.hora }}
+              {{ cita.horaInicio }}
             </span>
           </div>
           <p class="text-xs text-gray-500 mt-2">
-            Responsable: <span class="font-medium text-gray-700">{{ cita.responsable }}</span>
+            Responsable: <span class="font-medium text-gray-700">{{ cita.tecnicoResponsable }}</span>
           </p>
+        </div>
+
+        <!-- Mensaje si no hay datos -->
+        <div *ngIf="proximasCitas.length === 0" class="text-center text-gray-500 py-8">
+          No hay citas próximas programadas
         </div>
       </div>
     </div>

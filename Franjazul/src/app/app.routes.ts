@@ -27,6 +27,8 @@ import { Reportes } from './componentes/Negocio/reportes/reportes';
 import { Appointments } from './componentes/Negocio/appointments/appointments';
 import { AppointmentManagement } from './componentes/Negocio/appointment-management/appointment-management';
 import { Profile } from './componentes/Negocio/profile/profile';
+import { EstadoCitas } from './componentes/app_propiedades/data/estado-cita/estado-cita';
+import { FranjasHorarias } from './componentes/app_propiedades/data/franjas/franjas';
 
 
 export const routes: Routes = [
@@ -64,6 +66,8 @@ export const routes: Routes = [
             { path: 'cargos', component: Cargos },
             { path: 'formularios', component: Formularios },
             { path: 'reportes', component: Reportes },
+            { path: 'estado-cita', component: EstadoCitas},
+            { path: 'franjas', component: FranjasHorarias}
         ]
     }
 

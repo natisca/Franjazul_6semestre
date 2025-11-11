@@ -1,0 +1,274 @@
+
+<!-- Backdrop -->
+<div 
+  *ngIf="isOpen" 
+  class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+  (click)="onClose()"
+></div>
+
+<!-- Modal -->
+<div 
+  *ngIf="isOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+>
+  <div 
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+      <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400">
+        {{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}
+      </h2>
+      <button 
+        (click)="onClose()"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- ID Usuario -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            ID Usuario <span class="text-red-600">*</span>
+            <span *ngIf="isEditMode" class="text-xs text-gray-500 font-normal ml-2">(No editable)</span>
+          </label>
+          <input
+            type="text"
+            formControlName="idUsuario"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idUsuario?.invalid && idUsuario?.touched"
+            [class.border-gray-300]="idUsuario?.valid || idUsuario?.untouched"
+            [class.bg-gray-100]="isEditMode"
+            [class.cursor-not-allowed]="isEditMode"
+          />
+          <div *ngIf="idUsuario?.invalid && idUsuario?.touched" class="mt-1">
+            <p *ngIf="idUsuario?.errors?.['required']" class="text-sm text-red-600">
+              El ID es obligatorio
+            </p>
+            <p *ngIf="idUsuario?.errors?.['maxlength']" class="text-sm text-red-600">
+              Máximo 10 caracteres
+            </p>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Email <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="email"
+            formControlName="emailUs"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="emailUs?.invalid && emailUs?.touched"
+            [class.border-gray-300]="emailUs?.valid || emailUs?.untouched"
+          />
+          <div *ngIf="emailUs?.invalid && emailUs?.touched" class="mt-1">
+            <p *ngIf="emailUs?.errors?.['required']" class="text-sm text-red-600">
+              El email es obligatorio
+            </p>
+            <p *ngIf="emailUs?.errors?.['email']" class="text-sm text-red-600">
+              Email inválido
+            </p>
+          </div>
+        </div>
+
+        <!-- Nombre -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Nombre <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="nombreUs"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="nombreUs?.invalid && nombreUs?.touched"
+            [class.border-gray-300]="nombreUs?.valid || nombreUs?.untouched"
+          />
+          <div *ngIf="nombreUs?.invalid && nombreUs?.touched" class="mt-1">
+            <p *ngIf="nombreUs?.errors?.['required']" class="text-sm text-red-600">
+              El nombre es obligatorio
+            </p>
+          </div>
+        </div>
+
+        <!-- Primer Apellido -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Primer Apellido <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="apellidoUs"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="apellidoUs?.invalid && apellidoUs?.touched"
+            [class.border-gray-300]="apellidoUs?.valid || apellidoUs?.untouched"
+          />
+          <div *ngIf="apellidoUs?.invalid && apellidoUs?.touched" class="mt-1">
+            <p *ngIf="apellidoUs?.errors?.['required']" class="text-sm text-red-600">
+              El apellido es obligatorio
+            </p>
+          </div>
+        </div>
+
+        <!-- Segundo Apellido (Opcional) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Segundo Apellido (Opcional)
+          </label>
+          <input
+            type="text"
+            formControlName="apellido2Us"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-gray-100"
+          />
+        </div>
+
+        <!-- Teléfono -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Teléfono <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="telefonoUs"
+            maxlength="10"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="telefonoUs?.invalid && telefonoUs?.touched"
+            [class.border-gray-300]="telefonoUs?.valid || telefonoUs?.untouched"
+          />
+          <div *ngIf="telefonoUs?.invalid && telefonoUs?.touched" class="mt-1">
+            <p *ngIf="telefonoUs?.errors?.['required']" class="text-sm text-red-600">
+              El teléfono es obligatorio
+            </p>
+            <p *ngIf="telefonoUs?.errors?.['pattern']" class="text-sm text-red-600">
+              Debe tener exactamente 10 dígitos
+            </p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            {{ telefonoUs?.value?.length || 0 }}/10 dígitos
+          </p>
+        </div>
+
+        <!-- Password -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Contraseña <span class="text-red-600">*</span>
+          </label>
+          <div class="relative">
+            <input
+              [type]="mostrarPassword ? 'text' : 'password'"
+              formControlName="passwordUs"
+              class="w-full px-4 py-2 pr-12 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              [class.border-red-500]="passwordUs?.invalid && passwordUs?.touched"
+              [class.border-gray-300]="passwordUs?.valid || passwordUs?.untouched"
+            />
+            <button
+              type="button"
+              (click)="toggleMostrarPassword()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <svg *ngIf="!mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <svg *ngIf="mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="passwordUs?.invalid && passwordUs?.touched" class="mt-1">
+            <p *ngIf="passwordUs?.errors?.['required']" class="text-sm text-red-600">
+              La contraseña es obligatoria
+            </p>
+            <p *ngIf="passwordUs?.errors?.['maxlength']" class="text-sm text-red-600">
+              Máximo 50 caracteres
+            </p>
+          </div>
+        </div>
+
+        <!-- Perfil -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Perfil <span class="text-red-600">*</span>
+          </label>
+          <select
+            formControlName="idPerfil"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idPerfil?.invalid && idPerfil?.touched"
+            [class.border-gray-300]="idPerfil?.valid || idPerfil?.untouched"
+          >
+            <option [value]="null" disabled>Seleccione un perfil</option>
+            <option *ngFor="let perfil of perfiles" [value]="perfil.idPer">
+              {{ perfil.nombrePer }}
+            </option>
+          </select>
+          <div *ngIf="idPerfil?.invalid && idPerfil?.touched" class="mt-1">
+            <p *ngIf="idPerfil?.errors?.['required']" class="text-sm text-red-600">
+              El perfil es obligatorio
+            </p>
+          </div>
+          <div *ngIf="cargandoPerfiles" class="mt-2 text-sm text-gray-500">
+            Cargando perfiles...
+          </div>
+        </div>
+
+        <!-- Cargo -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Cargo <span class="text-red-600">*</span>
+          </label>
+          <select
+            formControlName="nombreCargo"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="nombreCargo?.invalid && nombreCargo?.touched"
+            [class.border-gray-300]="nombreCargo?.valid || nombreCargo?.untouched"
+          >
+            <option value="" disabled>Seleccione un cargo</option>
+            <option *ngFor="let cargo of cargos" [value]="cargo.nombreCargo">
+              {{ cargo.nombreCargo }}
+            </option>
+          </select>
+          <div *ngIf="nombreCargo?.invalid && nombreCargo?.touched" class="mt-1">
+            <p *ngIf="nombreCargo?.errors?.['required']" class="text-sm text-red-600">
+              El cargo es obligatorio
+            </p>
+          </div>
+          <div *ngIf="cargandoCargos" class="mt-2 text-sm text-gray-500">
+            Cargando cargos...
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="usuarioForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          {{ isEditMode ? 'Actualizar' : 'Crear' }} Usuario
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+

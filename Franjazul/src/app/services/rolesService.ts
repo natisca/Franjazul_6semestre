@@ -1,6 +1,8 @@
+
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface Rol {
   idRol: number;
@@ -8,11 +10,23 @@ export interface Rol {
   descripcionRol: string;
 }
 
-export interface ApiResponse {
-  success: boolean;
-  data?: any;
+// Respuesta exitosa siempre tiene data
+export interface ApiSuccessResponse<T> {
+  success: true;
+  data: T;
   message: string;
 }
+
+// Respuesta con error no tiene data
+export interface ApiErrorResponse {
+  success: false;
+  data?: never;
+  message: string;
+  error?: string;
+}
+
+// Union type para la respuesta
+export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 @Injectable({
   providedIn: 'root'
@@ -22,23 +36,61 @@ export class RolesService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerTodos(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(this.apiUrl);
+  // Obtener todos los roles
+  obtenerTodos(): Observable<ApiResponse<Rol[]>> {
+    return this.http.get<ApiResponse<Rol[]>>(this.apiUrl)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  obtenerPorId(id: number): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/${id}`);
+  // Obtener rol por ID
+  obtenerPorId(id: number): Observable<ApiResponse<Rol>> {
+    return this.http.get<ApiResponse<Rol>>(`${this.apiUrl}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  crear(rol: Rol): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(this.apiUrl, rol);
+  // Crear nuevo rol
+  crear(rol: Partial<Rol>): Observable<ApiResponse<Rol>> {
+    return this.http.post<ApiResponse<Rol>>(this.apiUrl, rol)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  actualizar(id: number, rol: Partial<Rol>): Observable<ApiResponse> {
-    return this.http.patch<ApiResponse>(`${this.apiUrl}/${id}`, rol);
+  // Actualizar rol existente
+  actualizar(id: number, rol: Partial<Rol>): Observable<ApiResponse<Rol>> {
+    return this.http.patch<ApiResponse<Rol>>(`${this.apiUrl}/${id}`, rol)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  eliminar(id: number): Observable<ApiResponse> {
-    return this.http.delete<ApiResponse>(`${this.apiUrl}/${id}`);
+  // Eliminar rol
+  eliminar(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Manejo centralizado de errores
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Ocurrió un error desconocido';
+    
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
+      
+      if (error.error?.message) {
+        errorMessage = error.error.message;
+      }
+    }
+    
+    console.error('Error completo:', error);
+    return throwError(() => error);
   }
 }

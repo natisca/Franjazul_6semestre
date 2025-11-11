@@ -1,0 +1,240 @@
+
+<!-- Backdrop -->
+<div 
+  *ngIf="isOpen" 
+  class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+  (click)="onClose()"
+></div>
+
+<!-- Modal -->
+<div 
+  *ngIf="isOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+>
+  <div 
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl transform transition-all duration-300 scale-100"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400">
+        {{ isEditMode ? 'Editar Permiso' : 'Nuevo Permiso' }}
+      </h2>
+      <button 
+        (click)="onClose()"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <form [formGroup]="permisoForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        
+        <!-- Perfil -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Perfil <span class="text-red-600">*</span>
+            <span *ngIf="isEditMode" class="text-xs text-gray-500 font-normal ml-2">(No editable)</span>
+          </label>
+          <select
+            formControlName="idPerEnPerm"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idPerEnPerm?.invalid && idPerEnPerm?.touched"
+            [class.border-gray-300]="idPerEnPerm?.valid || idPerEnPerm?.untouched"
+            [class.bg-gray-100]="isEditMode"
+            [class.cursor-not-allowed]="isEditMode"
+          >
+            <option [value]="null" disabled>Seleccione un perfil</option>
+            <option *ngFor="let perfil of perfiles" [value]="perfil.idPer">
+              {{ perfil.nombrePer }}
+            </option>
+          </select>
+          <div *ngIf="idPerEnPerm?.invalid && idPerEnPerm?.touched" class="mt-1">
+            <p *ngIf="idPerEnPerm?.errors?.['required']" class="text-sm text-red-600">
+              El perfil es obligatorio
+            </p>
+          </div>
+          <div *ngIf="cargandoPerfiles" class="mt-2 text-sm text-gray-500">
+            Cargando perfiles...
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Formulario <span class="text-red-600">*</span>
+            <span *ngIf="isEditMode" class="text-xs text-gray-500 font-normal ml-2">(No editable)</span>
+          </label>
+          <select
+            formControlName="idFormEnPerm"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idFormEnPerm?.invalid && idFormEnPerm?.touched"
+            [class.border-gray-300]="idFormEnPerm?.valid || idFormEnPerm?.untouched"
+            [class.bg-gray-100]="isEditMode"
+            [class.cursor-not-allowed]="isEditMode"
+          >
+            <option [value]="null" disabled>Seleccione un formulario</option>
+            <option *ngFor="let formulario of formularios" [value]="formulario.idForm">
+              {{ formulario.tituloForm }}
+            </option>
+          </select>
+          <div *ngIf="idFormEnPerm?.invalid && idFormEnPerm?.touched" class="mt-1">
+            <p *ngIf="idFormEnPerm?.errors?.['required']" class="text-sm text-red-600">
+              El formulario es obligatorio
+            </p>
+          </div>
+          <div *ngIf="cargandoFormularios" class="mt-2 text-sm text-gray-500">
+            Cargando formularios...
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Permisos -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Permisos de Acceso
+          </h3>
+          <!-- Checkbox para marcar/desmarcar todos -->
+          <label class="flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="todosMarcados"
+              (change)="toggleTodosPermisos($event)"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Seleccionar todos
+            </span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <!-- Puede Leer -->
+          <div class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
+            <input
+              type="checkbox"
+              formControlName="puedeLeer"
+              [value]="1"
+              [checked]="permisoForm.get('puedeLeer')?.value === 1"
+              (change)="permisoForm.patchValue({puedeLeer: $any($event.target).checked ? 1 : 0})"
+              class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+              id="puedeLeer"
+            />
+            <label for="puedeLeer" class="ml-3 cursor-pointer flex-1">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Leer</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Visualizar información</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Puede Crear -->
+          <div class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-300 dark:hover:border-green-600 transition-colors">
+            <input
+              type="checkbox"
+              formControlName="puedeCrear"
+              [value]="1"
+              [checked]="permisoForm.get('puedeCrear')?.value === 1"
+              (change)="permisoForm.patchValue({puedeCrear: $any($event.target).checked ? 1 : 0})"
+              class="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700"
+              id="puedeCrear"
+            />
+            <label for="puedeCrear" class="ml-3 cursor-pointer flex-1">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Crear</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Agregar nuevos registros</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Puede Editar -->
+          <div class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors">
+            <input
+              type="checkbox"
+              formControlName="puedeEditar"
+              [value]="1"
+              [checked]="permisoForm.get('puedeEditar')?.value === 1"
+              (change)="permisoForm.patchValue({puedeEditar: $any($event.target).checked ? 1 : 0})"
+              class="w-5 h-5 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500 dark:border-gray-600 dark:bg-gray-700"
+              id="puedeEditar"
+            />
+            <label for="puedeEditar" class="ml-3 cursor-pointer flex-1">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Editar</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Modificar registros</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Puede Borrar -->
+          <div class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-red-300 dark:hover:border-red-600 transition-colors">
+            <input
+              type="checkbox"
+              formControlName="puedeBorrar"
+              [value]="1"
+              [checked]="permisoForm.get('puedeBorrar')?.value === 1"
+              (change)="permisoForm.patchValue({puedeBorrar: $any($event.target).checked ? 1 : 0})"
+              class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700"
+              id="puedeBorrar"
+            />
+            <label for="puedeBorrar" class="ml-3 cursor-pointer flex-1">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Borrar</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Eliminar registros</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="permisoForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          {{ isEditMode ? 'Actualizar' : 'Crear' }} Permiso
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

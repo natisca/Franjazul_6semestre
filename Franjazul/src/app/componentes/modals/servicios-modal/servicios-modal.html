@@ -1,0 +1,93 @@
+
+<div *ngIf="isOpen" class="fixed inset-0 bg-black bg-opacity-50 z-40" (click)="onClose()"></div>
+
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+      <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400">
+        {{ isEditMode ? 'Editar Servicio' : 'Nuevo Servicio' }}
+      </h2>
+      <button (click)="onClose()" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="servicioForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Nombre -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Nombre del Servicio <span class="text-red-600">*</span>
+          </label>
+          <input type="text" formControlName="nombreSer" placeholder="Ejemplo: Vacunación"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            [class.border-red-500]="nombreSer?.invalid && nombreSer?.touched">
+          <div *ngIf="nombreSer?.invalid && nombreSer?.touched" class="mt-1">
+            <p *ngIf="nombreSer?.errors?.['required']" class="text-sm text-red-600">El nombre es obligatorio</p>
+            <p *ngIf="nombreSer?.errors?.['maxlength']" class="text-sm text-red-600">Máximo 20 caracteres</p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">{{ nombreSer?.value?.length || 0 }}/20 caracteres</p>
+        </div>
+
+        <!-- Tipo de Servicio -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Tipo de Servicio <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="nombreTps"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            [class.border-red-500]="nombreTps?.invalid && nombreTps?.touched">
+            <option [value]="null" disabled>Seleccione un tipo</option>
+            <option *ngFor="let tipo of tiposServicio" [value]="tipo.nombreTps">{{ tipo.nombreTps }}</option>
+          </select>
+          <div *ngIf="nombreTps?.invalid && nombreTps?.touched" class="mt-1">
+            <p *ngIf="nombreTps?.errors?.['required']" class="text-sm text-red-600">El tipo es obligatorio</p>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Descripción <span class="text-red-600">*</span>
+          </label>
+          <textarea formControlName="descripcionSer" rows="3" placeholder="Describe el servicio"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 resize-none dark:bg-gray-700 dark:border-gray-600"
+            [class.border-red-500]="descripcionSer?.invalid && descripcionSer?.touched"></textarea>
+          <div *ngIf="descripcionSer?.invalid && descripcionSer?.touched" class="mt-1">
+            <p *ngIf="descripcionSer?.errors?.['required']" class="text-sm text-red-600">La descripción es obligatoria</p>
+            <p *ngIf="descripcionSer?.errors?.['maxlength']" class="text-sm text-red-600">Máximo 150 caracteres</p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">{{ descripcionSer?.value?.length || 0 }}/150 caracteres</p>
+        </div>
+
+        <!-- Molécula (Opcional) -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Molécula (Opcional)
+          </label>
+          <select formControlName="nombreMol"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+            <option [value]="null">Sin molécula</option>
+            <option *ngFor="let mol of moleculas" [value]="mol.nombreMol">{{ mol.nombreMol }}</option>
+          </select>
+          <p class="text-xs text-gray-500 mt-1">Si el servicio utiliza una molécula específica</p>
+        </div>
+
+      </div>
+
+      <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button" (click)="onClose()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="servicioForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400">
+          {{ isEditMode ? 'Actualizar' : 'Crear' }} Servicio
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

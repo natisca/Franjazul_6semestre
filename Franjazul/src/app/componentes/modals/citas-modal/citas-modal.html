@@ -1,0 +1,166 @@
+<div *ngIf="isOpen" class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+  (click)="onClose()"></div>
+
+<!-- Modal -->
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100"
+    (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div
+      class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+      <h2 class="text-xl font-bold text-blue-900 dark:text-blue-400">
+        {{ isEditMode ? 'Editar Cita' : 'Nueva Cita' }}
+      </h2>
+      <button (click)="onClose()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <form [formGroup]="citaForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div *ngIf="cargandoDatos" class="text-center py-4 text-gray-500">
+        Cargando datos...
+      </div>
+
+      <div *ngIf="!cargandoDatos" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Observaciones -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Observaciones <span class="text-red-600">*</span>
+          </label>
+          <textarea formControlName="observacionesCita" rows="3" placeholder="Ingrese las observaciones de la cita"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="observacionesCita?.invalid && observacionesCita?.touched"
+            [class.border-gray-300]="observacionesCita?.valid || observacionesCita?.untouched"></textarea>
+          <div *ngIf="observacionesCita?.invalid && observacionesCita?.touched" class="mt-1">
+            <p *ngIf="observacionesCita?.errors?.['required']" class="text-sm text-red-600">
+              Las observaciones son obligatorias
+            </p>
+            <p *ngIf="observacionesCita?.errors?.['maxlength']" class="text-sm text-red-600">
+              Máximo 300 caracteres
+            </p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            {{ observacionesCita?.value?.length || 0 }}/300 caracteres
+          </p>
+        </div>
+
+        <!-- Usuario Técnico -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Usuario Técnico <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="idUsuarioTecnico"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idUsuarioTecnico?.invalid && idUsuarioTecnico?.touched">
+            <option [value]="null" disabled>Seleccione un técnico</option>
+            <option *ngFor="let tecnico of tecnicos" [value]="tecnico.idUsuario">
+              {{ obtenerNombreCompleto(tecnico) }}
+            </option>
+          </select>
+          <div *ngIf="idUsuarioTecnico?.invalid && idUsuarioTecnico?.touched" class="mt-1">
+            <p class="text-sm text-red-600">El técnico es obligatorio</p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Solo usuarios con cargo TECNICO</p>
+        </div>
+
+        <!-- Usuario Creador (Cliente) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Cliente <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="idUsuarioCreo"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idUsuarioCreo?.invalid && idUsuarioCreo?.touched">
+            <option [value]="null" disabled>Seleccione un cliente</option>
+            <option *ngFor="let cliente of clientes" [value]="cliente.idUsuario">
+              {{ obtenerNombreCompleto(cliente) }}
+            </option>
+          </select>
+          <div *ngIf="idUsuarioCreo?.invalid && idUsuarioCreo?.touched" class="mt-1">
+            <p class="text-sm text-red-600">El cliente es obligatorio</p>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Solo usuarios con cargo CLIENTE</p>
+        </div>
+
+        <!-- Franja Horaria -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Franja Horaria <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="idFranja"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idFranja?.invalid && idFranja?.touched">
+            <option [value]="null" disabled>Seleccione una franja</option>
+            <option *ngFor="let f of franjas" [value]="f.idFranja">
+              Franja #{{ f.idFranja }}
+              <span *ngIf="f.fechaInicio"> - {{ formatearFecha(f.fechaInicio) }}</span>
+            </option>
+          </select>
+          <div *ngIf="idFranja?.invalid && idFranja?.touched" class="mt-1">
+            <p class="text-sm text-red-600">La franja es obligatoria</p>
+          </div>
+        </div>
+
+        <!-- Lugar -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Lugar <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="idLugar"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="idLugar?.invalid && idLugar?.touched">
+            <option [value]="null" disabled>Seleccione un lugar</option>
+            <option *ngFor="let l of lugares" [value]="l.idLugar">
+              {{ l.nombreLugar }}
+            </option>
+          </select>
+          <div *ngIf="idLugar?.invalid && idLugar?.touched" class="mt-1">
+            <p class="text-sm text-red-600">El lugar es obligatorio</p>
+          </div>
+        </div>
+
+        <!-- Estado -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Estado de la Cita <span class="text-red-600">*</span>
+          </label>
+          <select formControlName="nombreEc"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            [class.border-red-500]="nombreEc?.invalid && nombreEc?.touched">
+            <option [value]="null" disabled>Seleccione un estado</option>
+            <option *ngFor="let e of estados" [value]="e.nombreEc">
+              {{ e.nombreEc }}
+            </option>
+          </select>
+          <div *ngIf="nombreEc?.invalid && nombreEc?.touched" class="mt-1">
+            <p class="text-sm text-red-600">El estado es obligatorio</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button" (click)="onClose()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="citaForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          {{ isEditMode ? 'Actualizar' : 'Crear' }} Cita
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -3,8 +3,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Moléculas</h1>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Gestión de moléculas del sistema</p>
+            <h1 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Citas</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Gestión de citas del sistema</p>
         </div>
         <button 
             (click)="abrirModalNuevo()"
@@ -13,7 +13,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Nueva Molécula
+            Nueva Cita
         </button>
     </div>
 
@@ -45,20 +45,29 @@
             <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
             <div class="absolute top-0 left-0 animate-ping rounded-full h-16 w-16 border-4 border-blue-400 opacity-20"></div>
         </div>
-        <span class="mt-4 text-gray-600 dark:text-gray-400 font-medium">Cargando moléculas...</span>
+        <span class="mt-4 text-gray-600 dark:text-gray-400 font-medium">Cargando citas...</span>
     </div>
 
-    <!-- Tabla de moléculas -->
+    <!-- Tabla de citas -->
     <div *ngIf="!cargando" class="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                            Molécula
+                            ID
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                            Descripción
+                            Técnico / Cliente
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Lugar
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Franja
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Estado
                         </th>
                         <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             Acciones
@@ -66,18 +75,18 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    <!-- Mensaje cuando no hay moléculas -->
-                    <tr *ngIf="moleculas.length === 0">
-                        <td colspan="3" class="px-6 py-16 text-center">
+                    <!-- Mensaje cuando no hay citas -->
+                    <tr *ngIf="citas.length === 0">
+                        <td colspan="6" class="px-6 py-16 text-center">
                             <div class="flex flex-col items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                                 </svg>
                                 <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">
-                                    No hay moléculas registradas
+                                    No hay citas registradas
                                 </p>
                                 <p class="text-gray-400 dark:text-gray-500 text-sm mb-4">
-                                    Comienza creando tu primera molécula
+                                    Comienza creando tu primera cita
                                 </p>
                                 <button 
                                     (click)="abrirModalNuevo()"
@@ -86,7 +95,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
-                                    Crear Primera Molécula
+                                    Crear Primera Cita
                                 </button>
                             </div>
                         </td>
@@ -94,51 +103,79 @@
 
                     <!-- Filas de datos -->
                     <tr 
-                        *ngFor="let molecula of moleculas" 
+                        *ngFor="let cita of citas" 
                         class="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150 group"
                     >
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-bold">
+                                {{ cita.idCita }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-purple-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                     </svg>
                                 </div>
-                                <div class="ml-4">
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ molecula.nombreMol }}
-                                    </span>
+                                <div class="ml-3">
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                        {{ obtenerNombreCompleto(cita.usuarioTecnico) || cita.usuarioTecnico.idUsuario }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                        Cliente: {{ obtenerNombreCompleto(cita.usuarioCreo) || cita.usuarioCreo.idUsuario }}
+                                    </div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                {{ molecula.descripcionMol }}
-                            </p>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                </svg>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">
+                                    {{ cita.lugar.nombreLugar || 'Lugar #' + cita.lugar.idLugar }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-xs text-gray-600 dark:text-gray-400">
+                                <div *ngIf="cita.franjaHoraria.fechaInicio">
+                                    {{ formatearFecha(cita.franjaHoraria.fechaInicio) }}
+                                </div>
+                                <div *ngIf="!cita.franjaHoraria.fechaInicio">
+                                    Franja #{{ cita.franjaHoraria.idFranja }}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                {{ cita.estadoCita.nombreEc }}
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <!-- Botón Editar -->
                                 <button 
-                                    (click)="abrirModalEditar(molecula)"
+                                    (click)="abrirModalEditar(cita)"
                                     class="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-md transform hover:scale-105"
-                                    title="Editar molécula"
+                                    title="Editar cita"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
-                                    <span class="text-sm font-medium">Editar</span>
                                 </button>
 
                                 <!-- Botón Eliminar -->
                                 <button 
-                                    (click)="eliminarMolecula(molecula.nombreMol)" 
+                                    (click)="eliminarCita(cita.idCita)" 
                                     class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-md transform hover:scale-105"
-                                    title="Eliminar molécula"
+                                    title="Eliminar cita"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                     </svg>
-                                    <span class="text-sm font-medium">Eliminar</span>
                                 </button>
                             </div>
                         </td>
@@ -150,18 +187,18 @@
 
     <!-- Footer con información -->
     <div 
-        *ngIf="!cargando && moleculas.length > 0" 
+        *ngIf="!cargando && citas.length > 0" 
         class="mt-4 flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
     >
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
             </svg>
-            <span>Total de moléculas: <span class="font-bold text-blue-600 dark:text-blue-400">{{ moleculas.length }}</span></span>
+            <span>Total de citas: <span class="font-bold text-blue-600 dark:text-blue-400">{{ citas.length }}</span></span>
         </div>
         
         <button 
-            (click)="cargarMoleculas()"
+            (click)="cargarCitas()"
             class="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
         >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -173,9 +210,9 @@
 </div>
 
 <!-- Modal Component -->
-<app-molecula-modal
+<app-cita-modal
     [isOpen]="isModalOpen"
-    [molecula]="moleculaSeleccionada"
+    [cita]="citaSeleccionada"
     (closeModal)="cerrarModal()"
-    (saveMolecula)="guardarMolecula($event)"
-></app-molecula-modal>
+    (saveCita)="guardarCita($event)"
+></app-cita-modal>

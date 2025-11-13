@@ -1,0 +1,139 @@
+<div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Servicios en Citas</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Gestión de servicios asociados a citas</p>
+        </div>
+        <button (click)="abrirModalNuevo()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Asociar Servicio
+        </button>
+    </div>
+
+    <div *ngIf="error" class="mb-4 p-4 bg-red-100 border border-red-400 rounded-lg">
+        <p class="text-red-700">{{ error }}</p>
+    </div>
+
+    <div *ngIf="cargando" class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!cargando"
+        class="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-bold uppercase">Cita</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold uppercase">Servicio</th>
+                    <th class="px-6 py-3 text-center text-xs font-bold uppercase">Cantidad</th>
+                    <th class="px-6 py-3 text-center text-xs font-bold uppercase">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr *ngIf="citasServicios.length === 0">
+                    <td colspan="4" class="px-6 py-16 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                        <p class="text-gray-500 text-lg mb-4">No hay servicios asociados a citas</p>
+                        <button (click)="abrirModalNuevo()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                            Asociar Primero
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngFor="let cs of citasServicios" class="hover:bg-blue-50 dark:hover:bg-gray-700 group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cita #{{
+                                    cs.citaEnIntermedio }}</div>
+                                <div class="text-xs text-gray-500" *ngIf="cs.cita?.observacionesCita">
+                                    {{ truncarTexto(cs.cita?.observacionesCita, 30) }}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-teal-100 dark:bg-teal-900">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-teal-600 dark:text-teal-300"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm text-gray-900 dark:text-gray-100">
+                                    {{ cs.servicio?.nombreSer || 'Servicio #' + cs.servicioEnIntermedio }}
+                                </div>
+                                <div class="text-xs text-gray-500">ID: {{ cs.servicioEnIntermedio }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span
+                            class="inline-flex items-center justify-center w-10 h-10 ">
+                            {{ cs.cantidadSer }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button (click)="abrirModalEditar(cs)"
+                                class="px-3 py-1.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                            <button (click)="eliminar(cs.citaEnIntermedio, cs.servicioEnIntermedio)"
+                                class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="!cargando && citasServicios.length > 0"
+        class="mt-4 flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
+            Total de asociaciones: <span class="font-bold text-blue-600">{{ citasServicios.length }}</span>
+        </span>
+        <button (click)="cargar()"
+            class="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Actualizar
+        </button>
+    </div>
+</div>
+
+<app-cita-servicio-modal [isOpen]="isModalOpen" [citaServicio]="citaServicioSeleccionado" (closeModal)="cerrarModal()"
+    (saveCitaServicio)="guardar($event)">
+</app-cita-servicio-modal>

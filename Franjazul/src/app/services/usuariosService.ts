@@ -55,6 +55,11 @@ export class UsuariosService {
       .pipe(catchError(this.handleError));
   }
 
+  obtenerPorCargo(nombreCargo: string): Observable<ApiResponse<Usuario[]>> {
+  return this.http.get<ApiResponse<Usuario[]>>(`${this.apiUrl}/por-cargo/${nombreCargo}`)
+    .pipe(catchError(this.handleError));
+}
+
   crear(usuario: Partial<Usuario>): Observable<ApiResponse<Usuario>> {
     return this.http.post<ApiResponse<Usuario>>(this.apiUrl, usuario)
       .pipe(catchError(this.handleError));

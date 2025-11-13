@@ -1,34 +1,188 @@
-<div class="p-6">
-    <div class="flex items-center mb-4">
-        <h1 class="text-2xl font-bold text-blue-900">Usuarios</h1>
+
+
+<div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-blue-900 dark:text-blue-400">Certificados</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Certificados generados automáticamente del sistema</p>
+        </div>
+        <button 
+            (click)="cargar()" 
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm hover:shadow-md"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Actualizar
+        </button>
     </div>
 
+    <!-- Mensaje de error -->
+    <div 
+        *ngIf="error" 
+        class="mb-4 p-4 bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 rounded-lg"
+    >
+        <p>{{ error }}</p>
+    </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-            <thead class="bg-blue-100">
-                <tr>
-                    <th class="px-4 py-2 text-left">Codigo</th>
-                    <th class="px-4 py-2 text-left">Adquirido</th>
-                    <th class="px-4 py-2 text-left">Finaliza</th>
-                    <th class="px-4 py-2 text-left">De que cita</th>
-                    <th class="px-4 py-2 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cer of listaCer" class="border-t">
-                    <td class="px-4 py-2">{{ cer.codigo_CER }}</td>
-                    <td class="px-4 py-2">{{ cer.fecha_emision | date:'dd/MM/yyyy'}}</td>
-                    <td class="px-4 py-2">{{ cer.fecha_vence | date:'dd/MM/yyyy'}}</td>
-                    <td class="px-4 py-2">{{ cer.cita_en_CER }}</td>
-                    <td class="px-4 py-2 text-center">
-                        <button (click)="eliminarCer(cer.codigo_CER)"
-                            class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-500">
-                            🗑 Eliminar
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Estado de carga -->
+    <div *ngIf="cargando" class="flex flex-col justify-center items-center py-20">
+        <div class="relative">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+            <div class="absolute top-0 left-0 animate-ping rounded-full h-16 w-16 border-4 border-blue-400 opacity-20"></div>
+        </div>
+        <span class="mt-4 text-gray-600 dark:text-gray-400 font-medium">Cargando certificados...</span>
+    </div>
+
+    <!-- Vista de Tabla -->
+    <div *ngIf="!cargando" class="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Código
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Cliente
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Cita
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Fecha Emisión
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Fecha Vencimiento
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Estado
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Días Restantes
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Mensaje cuando no hay certificados -->
+                    <tr *ngIf="certificados.length === 0">
+                        <td colspan="7" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                                </svg>
+                                <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">No hay certificados generados</p>
+                                <p class="text-gray-400 dark:text-gray-500 text-sm">Los certificados se generan automáticamente al completar citas</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Filas de datos -->
+                    <tr 
+                        *ngFor="let cert of certificados" 
+                        class="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                    >
+                        <!-- Código del Certificado -->
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                                        {{ cert.codigoCer }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Cliente (Usuario Creador) -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                        {{ obtenerNombreCliente(cert) }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                        ID: {{ cert.cita?.usuarioCreo?.idUsuario || 'N/A' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- ID Cita -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                                Cita #{{ cert.cita?.idCita || 'N/A' }}
+                            </span>
+                        </td>
+
+                        <!-- Fecha Emisión -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ formatearFechaCorta(cert.fechaEmision) }}
+                            </div>
+                        </td>
+
+                        <!-- Fecha Vencimiento -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ formatearFechaCorta(cert.fechaVence) }}
+                            </div>
+                        </td>
+
+                        <!-- Estado -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span 
+                                [ngClass]="obtenerColorEstado(obtenerEstadoVigencia(cert.fechaVence))" 
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs uppercase"
+                            >
+                                {{ obtenerTextoEstado(obtenerEstadoVigencia(cert.fechaVence)) }}
+                            </span>
+                        </td>
+
+                        <!-- Días Restantes -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span 
+                                class="inline-flex items-center justify-center w-12 h-12 rounded-full text-lg font-bold"
+                                [class.bg-green-100]="calcularDiasRestantes(cert.fechaVence) > 30"
+                                [class.text-green-600]="calcularDiasRestantes(cert.fechaVence) > 30"
+                                [class.bg-yellow-100]="calcularDiasRestantes(cert.fechaVence) > 0 && calcularDiasRestantes(cert.fechaVence) <= 30"
+                                [class.text-yellow-600]="calcularDiasRestantes(cert.fechaVence) > 0 && calcularDiasRestantes(cert.fechaVence) <= 30"
+                                [class.bg-red-100]="calcularDiasRestantes(cert.fechaVence) <= 0"
+                                [class.text-red-600]="calcularDiasRestantes(cert.fechaVence) <= 0"
+                            >
+                                <span *ngIf="calcularDiasRestantes(cert.fechaVence) > 0">
+                                    {{ calcularDiasRestantes(cert.fechaVence) }}
+                                </span>
+                                <span *ngIf="calcularDiasRestantes(cert.fechaVence) <= 0" class="text-xs">
+                                    ❌
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer con estadísticas -->
+    <div 
+        *ngIf="!cargando && certificados.length > 0" 
+        class="mt-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+    >
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">
+                Total de certificados: <span class="font-bold text-blue-600 dark:text-blue-400">{{ certificados.length }}</span>
+            </span>
+        </div>
     </div>
 </div>

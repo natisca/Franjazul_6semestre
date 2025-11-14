@@ -8,9 +8,6 @@ import { LayoutInterno } from './layouts/layout-interno/layout-interno';
 //importes del layout publico
 
 import { home } from './componentes/Negocio/home/home';
-import { Header } from './componentes/Reutilizables/header/header';
-import { Footer } from './componentes/Reutilizables/footer/footer';
-import { ServiceForm } from './componentes/Negocio/service-form/service-form';
 
 //importes del layout interno
 
@@ -37,6 +34,9 @@ import { ServiciosComponent } from './componentes/app_propiedades/data/servicios
 import { CitasComponent } from './componentes/app_propiedades/data/citas/citas';
 import { CitaServicioComponent } from './componentes/app_propiedades/data/cita-servicios/cita-servicios';
 import { CertificadosComponent } from './componentes/app_propiedades/data/certificados/certificados';
+import { authGuard } from './guards/authGuard';
+import { roleGuard } from './guards/roleGuard';
+import { publicGuard } from './guards/publicGuard';
 
 export const routes: Routes = [
 
@@ -53,38 +53,144 @@ export const routes: Routes = [
 
     //login
     {
-        path: 'login', component: Login
+        path: 'login', component: Login, canActivate: [publicGuard]
     },
 
     //Interno/dashboard
     {
         path: '',
-        component: LayoutInterno,
+        component: LayoutInterno, canActivate: [authGuard],
         children: [
-            { path: 'dashboard', component: Dashboard },
-            { path: 'appointments', component: Appointments},
-            { path: 'appointment/id', component: AppointmentManagement},
-            { path: 'profile', component: Profile},
-            { path: 'tablas', component: Tablas },
-            { path: 'usuarios', component: Usuarios },
-            { path: 'permisos', component: Permisos },
-            { path: 'roles', component: Roles },
-            { path: 'perfiles', component: Perfiles },
-            { path: 'cargos', component: Cargos },
-            { path: 'formularios', component: Formularios },
-            { path: 'reportes', component: Reportes },
-            { path: 'estado-cita', component: EstadoCitas},
-            { path: 'franjas', component: FranjasHorarias},
-            { path: 'lugares', component: LugaresComponent},
-            { path: 'tipo-lugar', component: TipoLugarComponent},
-            { path: 'moleculas', component: MoleculasComponent},
-            { path: 'tipo-servicio', component: TipoServicioComponent},
-            { path: 'servicios', component: ServiciosComponent},
-            { path: 'citas', component: CitasComponent},
-            { path: 'cita-servicio', component: CitaServicioComponent},
-            { path: 'certificados', component: CertificadosComponent}
-
+            {
+                path: 'dashboard',
+                component: Dashboard,
+                canActivate: [roleGuard],
+                data: { roles: ['TECNICO', 'ADMINISTRADOR'] }
+            },
+            {
+                path: 'appointments',
+                component: Appointments,
+                canActivate: [roleGuard],
+                data: { roles: ['TECNICO', 'ADMINISTRADOR'] }
+            },
+            {
+                path: 'appointment/id',
+                component: AppointmentManagement,
+                canActivate: [roleGuard],
+                data: { roles: ['TECNICO', 'ADMINISTRADOR'] }
+            },
+            {
+                path: 'profile',
+                component: Profile
+            },
+            {
+                path: 'tablas',
+                component: Tablas,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'usuarios',
+                component: Usuarios,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'permisos',
+                component: Permisos,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'roles',
+                component: Roles,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'perfiles',
+                component: Perfiles,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'cargos',
+                component: Cargos,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'formularios',
+                component: Formularios,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'reportes',
+                component: Reportes,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'estado-cita',
+                component: EstadoCitas,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'franjas',
+                component: FranjasHorarias,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'lugares',
+                component: LugaresComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'tipo-lugar',
+                component: TipoLugarComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'moleculas',
+                component: MoleculasComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'tipo-servicio',
+                component: TipoServicioComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'servicios',
+                component: ServiciosComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'citas',
+                component: CitasComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'cita-servicio',
+                component: CitaServicioComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            },
+            {
+                path: 'certificados',
+                component: CertificadosComponent,
+                canActivate: [roleGuard],
+                data: { roles: ['ADMINISTRADOR'] }
+            }
         ]
     }
-
 ];

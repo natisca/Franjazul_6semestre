@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 })
 export class Tablas {
   tablas= [
-    'Rolles',
+    'Roles',
     'Formularios',
     'Perfiles',
     'Permisos',
@@ -26,7 +26,6 @@ export class Tablas {
     'Servicios',
     'Estado_Cita',
     'Citas',
-    'Cita_servicio',
-    'Historial_citas'
+    'Cita_servicio'
   ];
 }

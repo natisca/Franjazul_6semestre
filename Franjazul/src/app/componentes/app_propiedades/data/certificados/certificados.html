@@ -112,7 +112,7 @@
                                         {{ obtenerNombreCliente(cert) }}
                                     </div>
                                     <div class="text-xs text-gray-500 dark:text-gray-400">
-                                        ID: {{ cert.cita?.usuarioCreo?.idUsuario || 'N/A' }}
+                                        ID: {{ cert.cita.usuarioCreo?.idUsuario || 'N/A' }}
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                         <!-- ID Cita -->
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                                Cita #{{ cert.cita?.idCita || 'N/A' }}
+                                Cita #{{ cert.cita.idCita || 'N/A' }}
                             </span>
                         </td>
 

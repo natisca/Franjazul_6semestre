@@ -1,38 +1,38 @@
-<div
-  class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-500 flex items-center justify-center p-4 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-500 flex items-center justify-center p-4 relative overflow-hidden">
+  
   <!-- Partículas -->
   <div class="absolute inset-0 pointer-events-none">
-    @for (particle of particles; track $index) {
-    <div [id]="'particle'+particle.id" class="spray-particle" [style.left.px]="particle.x" [style.top.px]="particle.y"></div>
-    }
-
+    <div *ngFor="let particle of particles" [id]="'particle'+particle.id" class="spray-particle" 
+         [style.left.px]="particle.x" [style.top.px]="particle.y"></div>
   </div>
 
   <!-- Icono flotante -->
   <div class="absolute top-20 right-20 float-animation">
-    <!-- Heroicon Bug -->
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-      class="size-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
       <path stroke-linecap="round" stroke-linejoin="round"
         d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0 1 12 12.75Zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 0 1-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 0 0 2.248-2.354M12 12.75a2.25 2.25 0 0 1-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 0 0-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 0 1 .4-2.253M12 8.25a2.25 2.25 0 0 0-2.248 2.146M12 8.25a2.25 2.25 0 0 1 2.248 2.146M8.683 5a6.032 6.032 0 0 1-1.155-1.002c.07-.63.27-1.222.574-1.747m.581 2.749A3.75 3.75 0 0 1 15.318 5m0 0c.427-.283.815-.62 1.155-.999a4.471 4.471 0 0 0-.575-1.752M4.921 6a24.048 24.048 0 0 0-.392 3.314c1.668.546 3.416.914 5.223 1.082M19.08 6c.205 1.08.337 2.187.392 3.314a23.882 23.882 0 0 1-5.223 1.082" />
     </svg>
-
   </div>
 
   <!-- Tarjeta -->
   <div class="w-full max-w-md shadow-2xl rounded-lg bg-white/95 backdrop-blur-sm p-6">
     <div class="text-center space-y-4">
       <div class="mx-auto w-16 h-16 bg-blue-800 text-white rounded-full flex items-center justify-center">
-        <!-- Icono Bug -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="size-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0 1 12 12.75Zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 0 1-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 0 0 2.248-2.354M12 12.75a2.25 2.25 0 0 1-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 0 0-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 0 1 .4-2.253M12 8.25a2.25 2.25 0 0 0-2.248 2.146M12 8.25a2.25 2.25 0 0 1 2.248 2.146M8.683 5a6.032 6.032 0 0 1-1.155-1.002c.07-.63.27-1.222.574-1.747m.581 2.749A3.75 3.75 0 0 1 15.318 5m0 0c.427-.283.815-.62 1.155-.999a4.471 4.471 0 0 0-.575-1.752M4.921 6a24.048 24.048 0 0 0-.392 3.314c1.668.546 3.416.914 5.223 1.082M19.08 6c.205 1.08.337 2.187.392 3.314a23.882 23.882 0 0 1-5.223 1.082" />
         </svg>
-
       </div>
       <h2 class="text-2xl font-bold text-gray-800">FranjAzul</h2>
       <p class="text-gray-500">Ingresa tus credenciales</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMessage" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+      <span class="text-sm">{{ errorMessage }}</span>
     </div>
 
     <div class="mt-6 space-y-6">
@@ -43,15 +43,16 @@
           <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
           <div class="mt-1 relative">
             <input id="email" type="email" formControlName="email" placeholder="usuario@correo.com"
-              class="w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <!-- Icono Email -->
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5 absolute left-3 top-2.5 text-gray-400">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 8.25l-9.75 6.75L2.25 8.25" />
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M21.75 8.25v9a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 17.25v-9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
           </div>
+          <p *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="mt-1 text-xs text-red-600">
+            Email inválido
+          </p>
         </div>
 
         <!-- Contraseña -->
@@ -60,30 +61,42 @@
           <div class="relative mt-1">
             <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
               placeholder="••••••••"
-              class="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <!-- Icono candado -->
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5 absolute left-3 top-2.5 text-gray-400">
               <path stroke-linecap="round" stroke-linejoin="round"
-                d="M16.5 10.5V7.125a4.125 4.125 0 10-8.25 0V10.5m12.75 0h-17.25m1.5 0v7.875A2.625 2.625 0 006.375 21h11.25a2.625 2.625 0 002.625-2.625V10.5" />
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
-            <!-- Botón mostrar/ocultar -->
             <button type="button" (click)="togglePassword()"
               class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+              <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
               <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M2.25 12c2.1-4.5 6.5-7.5 10.5-7.5s8.4 3 10.5 7.5c-2.1 4.5-6.5 7.5-10.5 7.5s-8.4-3-10.5-7.5z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
               </svg>
             </button>
           </div>
+          <p *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="mt-1 text-xs text-red-600">
+            La contraseña es requerida
+          </p>
         </div>
 
-
         <!-- Botón -->
-        <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
-          Iniciar Sesión
+        <button type="submit" 
+                [disabled]="loading || loginForm.invalid"
+                class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}</span>
         </button>
       </form>
 

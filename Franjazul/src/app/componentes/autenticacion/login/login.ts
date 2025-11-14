@@ -1,6 +1,8 @@
-import { NgFor, NgIf, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/authService';
 
 interface Particle {
   id: number;
@@ -8,10 +10,12 @@ interface Particle {
   y: number;
 }
 
-const CreateParticule = (id:number)=>{
-    return {id, 
-          x: Math.random() * 300,
-          y: Math.random() * 200}
+const CreateParticule = (id: number) => {
+  return {
+    id,
+    x: Math.random() * 300,
+    y: Math.random() * 200
+  }
 }
 
 @Component({
@@ -24,14 +28,18 @@ const CreateParticule = (id:number)=>{
 export class Login implements OnInit, OnDestroy {
   loginForm: FormGroup;
   showPassword: boolean = false;
-  particles: Particle[] = [CreateParticule(1), CreateParticule(2),CreateParticule(3),CreateParticule(4)];
-  private intervalId: any;
+  particles: Particle[] = [CreateParticule(1), CreateParticule(2), CreateParticule(3), CreateParticule(4)];
+  loading: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      showPassword: [false]
+      password: ['', Validators.required]
     });
   }
 
@@ -67,7 +75,7 @@ export class Login implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy(): void {
-      
+
   }
 
   togglePassword(): void {
@@ -76,7 +84,32 @@ export class Login implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log('Login attempt:', this.loginForm.value);
+      this.loading = true;
+      this.errorMessage = '';
+      const credentials = {
+        email: this.loginForm.value.email,
+        password: this.loginForm.value.password
+      };
+
+      console.log('Intentando login con:', credentials);
+
+      this.authService.login(credentials).subscribe({
+        next: (response) => {
+          console.log('✅ Login exitoso:', response);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('❌ Error en login:', error);
+          this.loading = false;
+          this.errorMessage = error.error?.message || 'Credenciales inválidas';
+        }
+      });
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }
+
+
+
+

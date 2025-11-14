@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { AuthService, LoginResponse } from '../../../services/authService';
 
 interface MenuItem {
   icon: string;
   label: string;
   route: string;
+  roles: string[];
 }
 
 @Component({
@@ -15,54 +17,84 @@ interface MenuItem {
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css']
 })
-export class Sidebar {
-  @Input() userName: string = 'Yo';
-  @Input() userRol: string = 'Probando';
-  @Input() userAvatar?: string;
 
+export class Sidebar implements OnInit {
+  @Output() sidebarToggled = new EventEmitter<boolean>();
+
+  currentUser: LoginResponse | null = null;
   isCollapsed = false;
   private isAnimating = false;
 
-  //Con esto, se le indica al layout cuando se mueve el sidebar
-  @Output() sidebarToggled = new EventEmitter<boolean>();
-
-  menuItem: MenuItem[] = [
-    { icon: 'home', label: 'Dashboard', route: '/dashboard' },
-    { icon: 'table-cells', label: 'Tablas', route: '/tablas' },
-    { icon: 'document-text', label: 'Reportes', route: '/' },
-    { icon: 'calendar', label: 'Citas', route: '/appointments' },
+  allMenuItems: MenuItem[] = [
+    { icon: 'home', label: 'Dashboard', route: '/dashboard', roles: ['TECNICO', 'ADMINISTRADOR'] },
+    { icon: 'calendar', label: 'Mis citas', route: '/appointments', roles: ['TECNICO', 'ADMINISTRADOR'] },
+    { icon: 'table-cells', label: 'Tablas', route: '/tablas', roles: ['ADMINISTRADOR'] },
+    { icon: 'document-text', label: 'Reportes', route: '/reportes', roles: ['ADMINISTRADOR'] }
   ];
 
+  filteredMenuItems: MenuItem[] = [];
 
-  toggleSidebar() {
-    if (this.isAnimating) return; 
-    
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+      this.filterMenuByRole();
+    });
+  }
+
+  filterMenuByRole(): void {
+    if (!this.currentUser) {
+      this.filteredMenuItems = [];
+      return;
+    }
+
+    const userCargo = this.currentUser.cargo.toUpperCase();
+    this.filteredMenuItems = this.allMenuItems.filter(item =>
+      item.roles.includes(userCargo)
+    );
+  }
+
+  toggleSidebar(): void {
+    if (this.isAnimating) return;
+
     this.isAnimating = true;
     this.isCollapsed = !this.isCollapsed;
-    
-    // Envia el estado del sidebar al layout
     this.sidebarToggled.emit(this.isCollapsed);
-    
+
     setTimeout(() => {
       this.isAnimating = false;
     }, 300);
   }
 
-  handleLogout() {
-    console.log('saliendo');
-    // Logica del logout
+  handleLogout(): void {
+    if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+      this.authService.logout();
+    }
+  }
+
+  get userName(): string {
+    return this.currentUser?.nombreCompleto || 'Usuario';
+  }
+
+  get userRol(): string {
+    return this.currentUser?.cargo || 'Rol';
   }
 
   get initials(): string {
-    return this.userName
+    if (!this.currentUser) return 'U';
+    return this.currentUser.nombreCompleto
       .split(' ')
       .map(n => n[0])
       .join('')
-      .toUpperCase();
+      .toUpperCase()
+      .substring(0, 2);
   }
 
   get sidebarWidth(): number {
     return this.isCollapsed ? 68 : 220;
   }
- 
 }

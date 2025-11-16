@@ -1,4 +1,4 @@
-<section id="servicios" class="py-20 bg-gray-50">
+<section id="servicios" class="py-20 bg-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center space-y-4 mb-16">
@@ -15,9 +15,9 @@
         <!-- Estilos y Contenidos de tarjetas -->
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 ">
             <div *ngFor="let service of services"
-                class="flex flex-col bg-white border border-gray-400 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                class="flex flex-col bg-white border border-blue-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <!-- Imagen con ícono -->
-                <div class="relative overflow-hidden rounded-t-lg border-t-10 border-blue-100">
+                <div class="relative overflow-hidden rounded-t-lg border-t-10 border-blue-50">
                     <img [src]="service.image" [alt]="service.title" class="w-full h-44 object-cover" />
 
                     <div
@@ -59,9 +59,6 @@
                                     d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
                             </svg>
 
-
-
-
                         </ng-container>
                     </div>
 
@@ -70,7 +67,7 @@
 
 
                 <!-- Contenido -->
-                <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-100">
+                <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-50">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-lg font-semibold text-blue-950">
@@ -105,18 +102,13 @@
         </div>
 
         <div class="text-center mt-16">
-            <div class="bg-blue-100 rounded-2xl p-8 border border-gray-400 shadow-sm">
+            <div class="bg-blue-50 rounded-2xl p-8 border border-blue-200 shadow-sm">
                 <h3 class="text-2xl font-bold text-blue-950 mb-4">
-                    ¿Necesitas una solución personalizada?
+                    ¿Necesitas certificado de la fumigación?
                 </h3>
-                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
-                    Nuestro equipo de expertos puede diseñar un plan de control de plagas
-                    específico para tus necesidades. Contáctanos para una evaluación
-                    gratuita.
-                </p>
                 <button
                     class="bg-blue-900 hover:bg-blue-800 text-white rounded-md px-6 py-3 font-medium transition-colors">
-                    Contactar Especialista
+                    Solicitar certificado
                 </button>
             </div>
         </div>

@@ -13,6 +13,8 @@ import { home } from './componentes/Negocio/home/home';
 
 import { Dashboard } from './componentes/Negocio/dashboard/dashboard';
 import { Login } from './componentes/autenticacion/login/login';
+import { Registro } from './componentes/autenticacion/registro/registro';
+import { CambioPassword } from './componentes/autenticacion/cambio-password/cambio-password';
 import { Tablas } from './componentes/Negocio/tablas/tablas';
 import { Usuarios } from './componentes/app_propiedades/data/usuarios/usuarios';
 import { Permisos } from './componentes/app_propiedades/data/permisos/permisos';
@@ -54,6 +56,17 @@ export const routes: Routes = [
     //login
     {
         path: 'login', component: Login, canActivate: [publicGuard]
+    },
+
+    {
+        path: 'registro',
+        component: Registro,
+        canActivate: [publicGuard]
+    },
+
+    {
+        path: 'cambiar-password',
+        component: CambioPassword
     },
 
     //Interno/dashboard

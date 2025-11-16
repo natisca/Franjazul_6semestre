@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ServiceForm } from '../service-form/service-form';
+import { AuthService } from '../../../services/authService';
 
 interface Service {
   icon: string;
@@ -29,7 +31,7 @@ export class home {
       description: 'Protección completa para tu hogar contra todo tipo de plagas domésticas.',
       image: 'Ruta de la imagen',
       features: ['Cucarachas', 'Hormigas', 'Arañas', 'Mosquitos'],
-      price: 'Desde $150.000',
+      price: 'Desde $80.000',
     },
     {
       icon: 'building-office',
@@ -37,7 +39,7 @@ export class home {
       description: 'Soluciones especializadas para restaurantes, hoteles y oficinas.',
       image: 'Ruta de la imagen',
       features: ['Certificación HACCP', 'Reportes mensuales', 'Seguimiento 24/7'],
-      price: 'Desde $300.000',
+      price: 'Desde $80.000',
     },
     {
       icon: 'shield-check',
@@ -45,7 +47,7 @@ export class home {
       description: 'Eliminación de virus, bacterias y microorganismos patógenos.',
       image: 'Ruta de la imagen',
       features: ['COVID-19', 'Bacterias', 'Hongos', 'Virus'],
-      price: 'Desde $200.000',
+      price: 'Desde $80.000',
     },
     {
       icon: 'home-modern',
@@ -53,7 +55,7 @@ export class home {
       description: 'Eliminación segura y efectiva de ratas y ratones.',
       image: 'Ruta de la imagen',
       features: ['Ratas', 'Ratones', 'Sellado de accesos', 'Monitoreo'],
-      price: 'Desde $180.000',
+      price: 'Desde $80.000',
     },
     {
       icon: 'leaf',
@@ -61,7 +63,7 @@ export class home {
       description: 'Cuidado integral de espacios verdes y control de plagas exteriores.',
       image: 'Ruta de la imagen',
       features: ['Pulgones', 'Cochinillas', 'Babosas', 'Caracoles'],
-      price: 'Desde $120.000',
+      price: 'Desde $80.000',
     },
     {
       icon: 'bolt',
@@ -69,15 +71,34 @@ export class home {
       description: 'Servicio de emergencia disponible 24/7 para casos urgentes.',
       image: 'Ruta de la imagen',
       features: ['Servicio 24/7', 'Respuesta rápida', 'Garantía inmediata'],
-      price: 'Desde $250.000',
+      price: 'Desde $80.000',
     },
   ];
 
-  abrirForm(){
+    constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {}
+
+  abrirForm(): void {
+    if (!this.authService.isAuthenticated()) {
+      alert('Debes iniciar sesión para solicitar un servicio');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser || currentUser.cargo.toUpperCase() !== 'CLIENTE') {
+      alert('Solo los clientes pueden solicitar servicios');
+      return;
+    }
+
     this.mostrarForm = true;
   }
 
-  cerrarForm(){
+  cerrarForm(): void {
     this.mostrarForm = false;
   }
 

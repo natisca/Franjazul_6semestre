@@ -19,6 +19,22 @@ export interface LoginResponse {
   nombrePerfil: string;
 }
 
+export interface RegistroRequest {
+  idUsuario: string;
+  nombreUs: string;
+  apellidoUs: string;
+  apellido2Us?: string;
+  emailUs: string;
+  passwordUs: string;
+  telefonoUs: number;
+}
+
+export interface CambioPasswordRequest {
+  email: string;
+  passwordNueva: string;
+}
+
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -60,6 +76,24 @@ export class AuthService {
           }
         })
       );
+  }
+
+    registrar(datos: RegistroRequest): Observable<ApiResponse<LoginResponse>> {
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/registrar`, datos)
+      .pipe(
+        tap(response => {
+          if (response.success && response.data) {
+            localStorage.setItem('currentUser', JSON.stringify(response.data));
+            localStorage.setItem('token', response.data.token);
+            this.currentUserSubject.next(response.data);
+            this.router.navigate(['/']);
+          }
+        })
+      );
+  }
+
+  cambiarPassword(datos: CambioPasswordRequest): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/cambiar-password`, datos);
   }
 
   logout(): void {

@@ -34,6 +34,17 @@ export interface Cita {
   };
 }
 
+export interface SolicitudCita {
+  idUsuarioCliente: string;
+  serviciosIds: number[];
+  fechaInicio: string;
+  fechaFin: string;
+  nombreLugar: string;
+  direccionLugar: string;
+  idTipoLugar: number;
+  idLugarPadre?: number;
+}
+
 export interface ApiSuccessResponse<T> {
   success: true;
   data: T;
@@ -70,6 +81,10 @@ export class CitasService {
   crear(cita: Partial<Cita>): Observable<ApiResponse<Cita>> {
     return this.http.post<ApiResponse<Cita>>(this.apiUrl, cita)
       .pipe(catchError(this.handleError));
+  }
+
+  solicitarCita(solicitud: SolicitudCita): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/solicitar`, solicitud);
   }
 
   actualizar(id: number, cita: Partial<Cita>): Observable<ApiResponse<Cita>> {

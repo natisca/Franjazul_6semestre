@@ -1,209 +1,252 @@
 <div class="p-6 space-y-6 bg-gray-50 min-h-screen">
-  <!-- Header -->
-  <div class="flex items-center justify-between flex-wrap gap-2">
-    <div>
-      <h1 class="text-2xl font-bold text-blue-800">
-        Gestión de Cita #{{ appointment.id }}
-      </h1>
-      <p class="text-gray-500 text-sm">
-        Administra y actualiza el estado de la cita
-      </p>
-    </div>
 
-    <div class="flex items-center gap-2">
-      <span
-        class="px-3 py-1 rounded-md border text-sm font-medium flex items-center gap-1"
-        [ngClass]="getStatusColor(appointment.status)"
-      >
-        <svg
-          *ngIf="appointment.status === 'programada'"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        {{ appointment.status | titlecase }}
-      </span>
-
-      <span
-        class="px-3 py-1 rounded-md border text-sm font-medium"
-        [ngClass]="getPriorityColor(appointment.priority)"
-      >
-        Prioridad: {{ appointment.priority | titlecase }}
-      </span>
-    </div>
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
   </div>
 
-  <div class="grid lg:grid-cols-3 gap-6">
-    <!-- Main Info -->
-    <div class="lg:col-span-2 space-y-6">
-      <!-- Detalles -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          Detalles de la Cita
-        </h2>
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+    {{ errorMessage }}
+  </div>
 
-        <div class="grid md:grid-cols-2 gap-4 text-sm">
+  <!-- Success -->
+  <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    {{ successMessage }}
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && cita">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <button
+            (click)="volver()"
+            class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
           <div>
-            <p class="text-gray-500">Cliente</p>
-            <p class="font-medium">{{ appointment.client }}</p>
-          </div>
-          <div>
-            <p class="text-gray-500">Servicio</p>
-            <p>{{ appointment.service }}</p>
-          </div>
-          <div>
-            <p class="text-gray-500">Fecha y Hora</p>
-            <p>
-              {{ appointment.date | date:'dd/MM/yyyy' }} a las {{ appointment.time }}
+            <h1 class="text-2xl font-bold text-blue-800">
+              Gestión de Cita #{{ cita.idCita }}
+            </h1>
+            <p class="text-gray-500 text-sm">
+              Administra y actualiza el estado de la cita
             </p>
           </div>
-          <div>
-            <p class="text-gray-500">Duración Estimada</p>
-            <p>{{ appointment.estimatedDuration }}</p>
-          </div>
-          <div class="col-span-2">
-            <p class="text-gray-500">Ubicación</p>
-            <p>{{ appointment.address }}</p>
-          </div>
-        </div>
-
-        <hr class="my-4 border-blue-300" />
-
-        <div>
-          <p class="text-gray-500">Descripción</p>
-          <p>{{ appointment.description }}</p>
         </div>
       </div>
 
-      <!-- Contacto -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 01-8 0 4 4 0 018 0zm6 4v1a2 2 0 01-2 2H4a2 2 0 01-2-2v-1a6 6 0 0112 0h4a6 6 0 0112 0z"/>
-          </svg>
-          Información de Contacto
-        </h2>
-        <div class="grid md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p class="text-gray-500">Teléfono</p>
-            <p class="font-medium">{{ appointment.clientPhone }}</p>
-          </div>
-          <div>
-            <p class="text-gray-500">Correo</p>
-            <p>{{ appointment.clientEmail }}</p>
+      <span
+        class="px-4 py-2 rounded-lg border text-sm font-medium"
+        [ngClass]="getStatusColor(cita.estadoCita)">
+        {{ getStatusText(cita.estadoCita) }}
+      </span>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Main Info -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Detalles Cliente -->
+        <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Información del Cliente
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-gray-500">Nombre</p>
+              <p class="font-medium">{{ cita.nombreCliente }}</p>
+            </div>
+            <div>
+              <p class="text-gray-500">ID Cliente</p>
+              <p>{{ cita.idCliente }}</p>
+            </div>
           </div>
         </div>
+
+        <!-- Detalles Cita -->
+        <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Detalles de la Cita
+          </h2>
+
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-gray-500">Fecha</p>
+                <p class="font-medium">{{ formatDate(cita.fechaInicio) }}</p>
+              </div>
+              <div>
+                <p class="text-gray-500">Horario</p>
+                <p>{{ formatTime(cita.fechaInicio) }} - {{ formatTime(cita.fechaFin) }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-gray-500">Dirección</p>
+                <p>{{ cita.direccionLugar }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-gray-500">Lugar</p>
+                <p>{{ cita.nombreLugar }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Servicios -->
+        <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Servicios Solicitados
+          </h2>
+
+          <div class="space-y-2">
+            <div
+              *ngFor="let servicio of cita.servicios"
+              (click)="toggleServicioCompletado(servicio)"
+              class="flex items-center gap-3 p-3 bg-white border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors"
+              [class.border-blue-400]="!isServicioCompletado(servicio)"
+              [class.border-green-500]="isServicioCompletado(servicio)"
+              [class.bg-green-50]="isServicioCompletado(servicio)">
+              
+              <div class="flex-shrink-0">
+                <div
+                  *ngIf="!isServicioCompletado(servicio)"
+                  class="w-6 h-6 border-2 border-gray-300 rounded-md">
+                </div>
+                <div
+                  *ngIf="isServicioCompletado(servicio)"
+                  class="w-6 h-6 bg-green-500 border-2 border-green-500 rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+
+              <span class="flex-1 font-medium"
+                    [class.text-gray-900]="!isServicioCompletado(servicio)"
+                    [class.text-green-700]="isServicioCompletado(servicio)">
+                {{ servicio }}
+              </span>
+
+              <span *ngIf="isServicioCompletado(servicio)" class="text-xs text-green-600 font-medium">
+                Completado
+              </span>
+            </div>
+
+            <p class="text-xs text-gray-500 mt-3">
+              💡 Haz clic en los servicios para marcarlos como completados
+            </p>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Recursos -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
-          </svg>
-          Recursos Asignados
-        </h2>
-        <div class="grid md:grid-cols-2 gap-2">
-          <div
-            *ngFor="let resource of appointment.resources"
-            class="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-blue-200"
-          >
-            <span class="w-2 h-2 bg-blue-700 rounded-full"></span>
-            <span>{{ resource }}</span>
+      <!-- Sidebar -->
+      <div class="space-y-6">
+
+        <!-- Reagendar -->
+        <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Reagendar Cita
+          </h2>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Nueva Fecha
+              </label>
+              <input
+                type="date"
+                [(ngModel)]="fechaSeleccionada"
+                (ngModelChange)="onFechaHoraChange()"
+                [min]="minDate"
+                class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Nuevo Horario
+              </label>
+              <select
+                [(ngModel)]="horarioSeleccionado"
+                (ngModelChange)="onFechaHoraChange()"
+                class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                <option *ngFor="let horario of horariosDisponibles" [value]="horario.inicio">
+                  {{ horario.label }}
+                </option>
+              </select>
+            </div>
+
+            <div *ngIf="cambioFranja" class="p-3 bg-purple-50 border border-purple-300 rounded-lg">
+              <p class="text-xs text-purple-700 font-medium">
+                ⚠️ Al cambiar la fecha/hora, el estado pasará automáticamente a REAGENDADA
+              </p>
+            </div>
           </div>
         </div>
+
+        <!-- Cambiar Estado -->
+        <div *ngIf="!cambioFranja" class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Cambiar Estado</h2>
+          <select
+            [(ngModel)]="estadoSeleccionado"
+            class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+            <option *ngFor="let estado of estadosDisponibles" [value]="estado.nombreEc">
+              {{ estado.descripcionEc }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Observaciones</h2>
+          <textarea
+            [(ngModel)]="observaciones"
+            placeholder="Agrega comentarios o notas sobre la cita..."
+            rows="4"
+            maxlength="300"
+            class="w-full px-3 py-2 border border-blue-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
+          <p class="text-xs text-gray-500 mt-1">{{ observaciones.length }}/300 caracteres</p>
+        </div>
+
+        <!-- Botón Actualizar -->
+        <button
+          (click)="actualizarCita()"
+          [disabled]="loading"
+          class="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          <svg *ngIf="loading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ loading ? 'Actualizando...' : 'Guardar Cambios' }}</span>
+        </button>
+
       </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="space-y-6">
-      <!-- Cambiar estado -->
-      <div
-        *ngIf="canModifyAppointment()"
-        class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm"
-      >
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Cambiar Estado</h2>
-        <select
-          [(ngModel)]="newStatus"
-          class="w-full p-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-        >
-          <option value="programada">Programada</option>
-          <option value="en-proceso">En Proceso</option>
-          <option value="completada">Completada</option>
-          <option value="cancelada">Cancelada</option>
-        </select>
-        <button
-          (click)="handleStatusChange()"
-          [disabled]="newStatus === appointment.status"
-          class="w-full mt-3 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:bg-gray-400"
-        >
-          Actualizar Estado
-        </button>
-      </div>
-
-      <!-- Comentarios -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Agregar Comentario</h2>
-        <textarea
-          [(ngModel)]="newComment"
-          placeholder="Escribe tu comentario..."
-          rows="3"
-          class="w-full p-2 border border-blue-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-        ></textarea>
-        <button
-          (click)="handleAddComment()"
-          [disabled]="!newComment.trim()"
-          class="w-full mt-3 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition disabled:bg-gray-400"
-        >
-          Agregar Comentario
-        </button>
-      </div>
-
-      <!-- Recursos -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Solicitar Recursos</h2>
-        <textarea
-          [(ngModel)]="requestedResources"
-          placeholder="Describe los recursos que necesitas..."
-          rows="3"
-          class="w-full p-2 border border-blue-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-        ></textarea>
-        <button
-          (click)="handleRequestResources()"
-          [disabled]="!requestedResources.trim()"
-          class="w-full mt-3 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition disabled:bg-gray-400"
-        >
-          Solicitar Recursos
-        </button>
-      </div>
-
-      <!-- Historial -->
-      <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 shadow-sm">
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Historial de Comentarios</h2>
-        <div class="space-y-2">
-          <div
-            *ngFor="let comment of appointment.comments"
-            class="p-2 bg-blue-50 border border-blue-200 rounded-md text-sm"
-          >
-            {{ comment }}
-          </div>
-          <p *ngIf="appointment.comments.length === 0" class="text-gray-500 text-center py-3">
-            No hay comentarios aún.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </div>

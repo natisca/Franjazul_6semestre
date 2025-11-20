@@ -1,4 +1,3 @@
-// src/app/interfaces/dashboard.interface.ts
 
 export interface DashboardStats {
   totalCitas: number;

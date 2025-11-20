@@ -19,7 +19,7 @@
 
     <div *ngIf="!cargando" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-700">
+            <thead class="bg-gradient-to-r from-blue-50 to-blue-400 dark:from-gray-700 dark:to-gray-700">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">Servicio</th>
                     <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">Descripción</th>
@@ -82,10 +82,6 @@
         </table>
     </div>
 
-    <div *ngIf="!cargando && servicios.length > 0" class="mt-4 flex justify-between px-4 py-3 bg-white dark:bg-gray-800 border rounded-lg">
-        <span class="text-sm text-gray-600">Total: <span class="font-bold text-blue-600">{{ servicios.length }}</span></span>
-        <button (click)="cargarServicios()" class="text-sm text-gray-600 hover:text-blue-600">Actualizar</button>
-    </div>
 </div>
 
 <app-servicio-modal [isOpen]="isModalOpen" [servicio]="servicioSeleccionado" (closeModal)="cerrarModal()" (saveServicio)="guardarServicio($event)"></app-servicio-modal>

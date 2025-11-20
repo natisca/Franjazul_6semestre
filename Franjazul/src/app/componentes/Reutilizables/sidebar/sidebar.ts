@@ -27,7 +27,7 @@ export class Sidebar implements OnInit {
 
   allMenuItems: MenuItem[] = [
     { icon: 'home', label: 'Dashboard', route: '/dashboard', roles: ['TECNICO', 'ADMINISTRADOR'] },
-    { icon: 'calendar', label: 'Mis citas', route: '/appointments', roles: ['TECNICO', 'ADMINISTRADOR'] },
+    { icon: 'calendar', label: 'Mis citas', route: '/appointments', roles: ['TECNICO'] },
     { icon: 'table-cells', label: 'Tablas', route: '/tablas', roles: ['ADMINISTRADOR'] },
     { icon: 'document-text', label: 'Reportes', route: '/reportes', roles: ['ADMINISTRADOR'] }
   ];

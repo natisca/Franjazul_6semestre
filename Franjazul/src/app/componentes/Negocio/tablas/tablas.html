@@ -1,16 +1,17 @@
 <div class="p-6">
   <h1 class="text-2xl font-bold text-blue-900">Gestión de Tablas</h1>
   <p class="text-gray-600 mb-6">
-    Administra la información de las {{ tablas.length }} tablas de la base de datos
+    Administra la información de las {{ filteredMenuTablas.length }} tablas de la base de datos
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     <a
-      *ngFor="let tabla of tablas"
-      routerLink="/"
-      class="bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-4 py-3 font-medium text-blue-900 shadow-sm transition cursor-pointer"
+      *ngFor="let tabla of filteredMenuTablas"
+      [routerLink]="tabla.route"
+      routerLinkActive="bg-blue-800 text-white"
+      class="bg-blue-50 hover:bg-blue-200 border border-blue-200 rounded-lg px-4 py-3 font-medium text-blue-900 shadow-sm transition cursor-pointer"
     >
-      {{ tabla }}
+      {{ tabla.label }}
     </a>
   </div>
 </div>

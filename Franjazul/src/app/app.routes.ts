@@ -84,12 +84,12 @@ export const routes: Routes = [
                 path: 'appointments',
                 component: Appointments,
                 canActivate: [roleGuard],
-                data: { roles: ['TECNICO', 'ADMINISTRADOR'] }
+                data: { roles: ['TECNICO'] }
             },
             {
-                path: 'appointment/id',
+                path: 'appointment/:id',
                 component: AppointmentManagement,
-                canActivate: [roleGuard],
+                canActivate: [authGuard, roleGuard],
                 data: { roles: ['TECNICO', 'ADMINISTRADOR'] }
             },
             {

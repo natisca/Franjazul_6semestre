@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@layer base {
+  ::placeholder {
+    @apply text-gray-400; /* o el color que prefieras */
+  }
+}

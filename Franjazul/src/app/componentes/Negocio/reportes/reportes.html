@@ -1,1 +1,306 @@
-<p>reportes works!</p>
+
+<div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      📊 Reportes
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Genera y descarga reportes detallados de citas, productividad y servicios
+    </p>
+  </div>
+
+  <!-- Tabs de selección de reporte -->
+  <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+    <nav class="-mb-px flex space-x-8">
+      <button
+        (click)="cambiarReporte('citas')"
+        [class.border-teal-500]="reporteActivo === 'citas'"
+        [class.text-teal-600]="reporteActivo === 'citas'"
+        [class.dark:text-teal-400]="reporteActivo === 'citas'"
+        [class.border-transparent]="reporteActivo !== 'citas'"
+        [class.text-gray-500]="reporteActivo !== 'citas'"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
+        📅 Citas por Período
+      </button>
+
+      <button
+        (click)="cambiarReporte('productividad')"
+        [class.border-teal-500]="reporteActivo === 'productividad'"
+        [class.text-teal-600]="reporteActivo === 'productividad'"
+        [class.dark:text-teal-400]="reporteActivo === 'productividad'"
+        [class.border-transparent]="reporteActivo !== 'productividad'"
+        [class.text-gray-500]="reporteActivo !== 'productividad'"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
+        👨‍🔧 Productividad de Técnicos
+      </button>
+
+      <button
+        (click)="cambiarReporte('servicios')"
+        [class.border-teal-500]="reporteActivo === 'servicios'"
+        [class.text-teal-600]="reporteActivo === 'servicios'"
+        [class.dark:text-teal-400]="reporteActivo === 'servicios'"
+        [class.border-transparent]="reporteActivo !== 'servicios'"
+        [class.text-gray-500]="reporteActivo !== 'servicios'"
+        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
+        🔧 Servicios Más Solicitados
+      </button>
+    </nav>
+  </div>
+
+  <!-- Card de filtros -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      🔍 Filtros
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Fecha Inicio -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Fecha Inicio *
+        </label>
+        <input
+          type="date"
+          [(ngModel)]="fechaInicio"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+      </div>
+
+      <!-- Fecha Fin -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Fecha Fin *
+        </label>
+        <input
+          type="date"
+          [(ngModel)]="fechaFin"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+      </div>
+
+      <!-- Filtro Estado (solo para Citas) -->
+      <div *ngIf="reporteActivo === 'citas'">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Estado
+        </label>
+        <select
+          [(ngModel)]="estadoSeleccionado"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+          <option value="">Todos los estados</option>
+          <option *ngFor="let estado of estadosCita" [value]="estado.nombreEc">
+            {{ estado.nombreEc }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtro Técnico (para Citas y Productividad) -->
+      <div *ngIf="reporteActivo === 'citas' || reporteActivo === 'productividad'">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Técnico
+        </label>
+        <select
+          [(ngModel)]="tecnicoSeleccionado"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+          <option value="">Todos los técnicos</option>
+          <option *ngFor="let tecnico of tecnicos" [value]="tecnico.idUsuario">
+            {{ tecnico.nombreUs }} {{ tecnico.apellidoUs }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtro Tipo de Servicio (solo para Servicios) -->
+      <div *ngIf="reporteActivo === 'servicios'">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Tipo de Servicio
+        </label>
+        <select
+          [(ngModel)]="tipoServicioSeleccionado"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+          <option value="">Todos los tipos</option>
+          <option *ngFor="let tipo of tiposServicio" [value]="tipo.nombreTps">
+            {{ tipo.nombreTps }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap gap-3 mt-6">
+      <button
+        (click)="generarReporte()"
+        [disabled]="cargandoDatos"
+        class="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg 
+               font-medium transition-colors duration-200 disabled:opacity-50 
+               disabled:cursor-not-allowed flex items-center gap-2">
+        <span *ngIf="!cargandoDatos">🔎 Generar Reporte</span>
+        <span *ngIf="cargandoDatos">⏳ Generando...</span>
+      </button>
+
+      <button
+        (click)="descargarExcel()"
+        [disabled]="!hayDatos || descargandoExcel"
+        class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg 
+               font-medium transition-colors duration-200 disabled:opacity-50 
+               disabled:cursor-not-allowed flex items-center gap-2">
+        <span *ngIf="!descargandoExcel">📥 Descargar Excel</span>
+        <span *ngIf="descargandoExcel">⏳ Descargando...</span>
+      </button>
+
+      <button
+        (click)="limpiarFiltros()"
+        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg 
+               font-medium transition-colors duration-200">
+        🧹 Limpiar Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensajes -->
+  <div *ngIf="mensaje" 
+       [class.bg-green-50]="tipoMensaje === 'success'"
+       [class.border-green-500]="tipoMensaje === 'success'"
+       [class.text-green-700]="tipoMensaje === 'success'"
+       [class.bg-red-50]="tipoMensaje === 'error'"
+       [class.border-red-500]="tipoMensaje === 'error'"
+       [class.text-red-700]="tipoMensaje === 'error'"
+       class="p-4 mb-6 rounded-lg border-l-4">
+    {{ mensaje }}
+  </div>
+
+  <!-- Tabla de resultados - CITAS -->
+  <div *ngIf="reporteActivo === 'citas' && datosCitas.length > 0" 
+       class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Resultados: {{ datosCitas.length }} cita(s) encontrada(s)
+      </h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">ID</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Fecha</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Cliente</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Técnico</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Lugar</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Servicios</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tr *ngFor="let cita of datosCitas" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ cita.idCita }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ formatearFecha(cita.fechaInicio) }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ cita.cliente }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ cita.tecnico }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ cita.lugar }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ cita.servicios }}</td>
+            <td class="px-4 py-3 text-sm">
+              <span [class]="'px-2 py-1 rounded-full text-xs font-medium ' + 
+                            (cita.estado === 'COMPLETADA' ? 'bg-green-100 text-green-800' :
+                             cita.estado === 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800' :
+                             cita.estado === 'CANCELADA' ? 'bg-red-100 text-red-800' :
+                             'bg-blue-100 text-blue-800')">
+                {{ cita.estado }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tabla de resultados - PRODUCTIVIDAD -->
+  <div *ngIf="reporteActivo === 'productividad' && datosProductividad.length > 0" 
+       class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Resultados: {{ datosProductividad.length }} técnico(s) encontrado(s)
+      </h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Técnico</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Completadas</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Pendientes</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Canceladas</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">% Efectividad</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">% Cancelación</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tr *ngFor="let dato of datosProductividad" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{{ dato.nombreCompleto }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.totalCitasAsignadas }}</td>
+            <td class="px-4 py-3 text-sm text-green-600 dark:text-green-400 font-semibold">{{ dato.citasCompletadas }}</td>
+            <td class="px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">{{ dato.citasPendientes }}</td>
+            <td class="px-4 py-3 text-sm text-red-600 dark:text-red-400">{{ dato.citasCanceladas }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.porcentajeEfectividad }}%</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.porcentajeCancelacion }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tabla de resultados - SERVICIOS -->
+  <div *ngIf="reporteActivo === 'servicios' && datosServicios.length > 0" 
+       class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Resultados: {{ datosServicios.length }} servicio(s) encontrado(s)
+      </h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Servicio</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Tipo</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Molécula</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Veces</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Cantidad</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Completadas</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">% Completado</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tr *ngFor="let dato of datosServicios" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{{ dato.nombreServicio }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.tipoServicio }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.molecula }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.vecesSolicitado }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.cantidadTotal }}</td>
+            <td class="px-4 py-3 text-sm text-green-600 dark:text-green-400 font-semibold">{{ dato.citasCompletadas }}</td>
+            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ dato.porcentajeCompletado }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!cargandoDatos && !hayDatos" 
+       class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
+    <div class="text-6xl mb-4">📊</div>
+    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      No hay datos para mostrar
+    </h3>
+    <p class="text-gray-600 dark:text-gray-400">
+      Selecciona los filtros y haz clic en "Generar Reporte" para visualizar los datos
+    </p>
+  </div>
+</div>

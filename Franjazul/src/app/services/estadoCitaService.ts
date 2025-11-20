@@ -1,28 +1,13 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ApiResponse } from '../models/api-response';
 
 export interface EstadoCita {
   nombreEc: string;
   descripcionEc: string;
 }
-
-export interface ApiSuccessResponse<T> {
-  success: true;
-  data: T;
-  message: string;
-}
-
-export interface ApiErrorResponse {
-  success: false;
-  data?: never;
-  message: string;
-  error?: string;
-}
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +39,11 @@ export class EstadoCitaService {
 
   eliminar(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  obtenerEstadosDisponibles(): Observable<ApiResponse<EstadoCita[]>> {
+    return this.http.get<ApiResponse<EstadoCita[]>>(`${this.apiUrl}/disponibles`)
       .pipe(catchError(this.handleError));
   }
 

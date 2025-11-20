@@ -15,9 +15,9 @@
         <!-- Estilos y Contenidos de tarjetas -->
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 ">
             <div *ngFor="let service of services"
-                class="flex flex-col bg-white border border-blue-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                class="flex flex-col bg-white border border-blue-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <!-- Imagen con ícono -->
-                <div class="relative overflow-hidden rounded-t-lg border-t-10 border-blue-50">
+                <div >
                     <img [src]="service.image" [alt]="service.title" class="w-full h-44 object-cover" />
 
                     <div
@@ -67,7 +67,7 @@
 
 
                 <!-- Contenido -->
-                <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-50">
+                <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-200 border-t border-blue-400">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-lg font-semibold text-blue-950">
@@ -91,7 +91,7 @@
                     <!-- Botón para solicitar servicio-->
                     <button
                         (click)="abrirForm()"
-                        class="mt-6 w-full bg-blue-900 hover:bg-blue-800 text-white rounded-md py-2 font-medium transition-colors">
+                        class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 font-medium transition-colors">
                         Solicitar Servicio
                     </button>
 

@@ -2,8 +2,8 @@
 <div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
   <!-- Header -->
   <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-      📊 Reportes
+    <h1 class="text-3xl font-bold text-blue-900 dark:text-white mb-2">
+      Reportes
     </h1>
     <p class="text-gray-600 dark:text-gray-400">
       Genera y descarga reportes detallados de citas, productividad y servicios
@@ -15,8 +15,8 @@
     <nav class="-mb-px flex space-x-8">
       <button
         (click)="cambiarReporte('citas')"
-        [class.border-teal-500]="reporteActivo === 'citas'"
-        [class.text-teal-600]="reporteActivo === 'citas'"
+        [class.border-blue-500]="reporteActivo === 'citas'"
+        [class.text-blue-600]="reporteActivo === 'citas'"
         [class.dark:text-teal-400]="reporteActivo === 'citas'"
         [class.border-transparent]="reporteActivo !== 'citas'"
         [class.text-gray-500]="reporteActivo !== 'citas'"
@@ -26,8 +26,8 @@
 
       <button
         (click)="cambiarReporte('productividad')"
-        [class.border-teal-500]="reporteActivo === 'productividad'"
-        [class.text-teal-600]="reporteActivo === 'productividad'"
+        [class.border-blue-500]="reporteActivo === 'productividad'"
+        [class.text-blue-600]="reporteActivo === 'productividad'"
         [class.dark:text-teal-400]="reporteActivo === 'productividad'"
         [class.border-transparent]="reporteActivo !== 'productividad'"
         [class.text-gray-500]="reporteActivo !== 'productividad'"
@@ -37,8 +37,8 @@
 
       <button
         (click)="cambiarReporte('servicios')"
-        [class.border-teal-500]="reporteActivo === 'servicios'"
-        [class.text-teal-600]="reporteActivo === 'servicios'"
+        [class.border-blue-500]="reporteActivo === 'servicios'"
+        [class.text-blue-600]="reporteActivo === 'servicios'"
         [class.dark:text-teal-400]="reporteActivo === 'servicios'"
         [class.border-transparent]="reporteActivo !== 'servicios'"
         [class.text-gray-500]="reporteActivo !== 'servicios'"
@@ -138,7 +138,7 @@
       <button
         (click)="generarReporte()"
         [disabled]="cargandoDatos"
-        class="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg 
+        class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg 
                font-medium transition-colors duration-200 disabled:opacity-50 
                disabled:cursor-not-allowed flex items-center gap-2">
         <span *ngIf="!cargandoDatos">🔎 Generar Reporte</span>
@@ -295,7 +295,6 @@
   <!-- Estado vacío -->
   <div *ngIf="!cargandoDatos && !hayDatos" 
        class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
-    <div class="text-6xl mb-4">📊</div>
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
       No hay datos para mostrar
     </h3>

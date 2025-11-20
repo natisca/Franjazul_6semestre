@@ -84,4 +84,9 @@
 
 </div>
 
-<app-servicio-modal [isOpen]="isModalOpen" [servicio]="servicioSeleccionado" (closeModal)="cerrarModal()" (saveServicio)="guardarServicio($event)"></app-servicio-modal>
+<app-servicio-modal 
+[isOpen]="isModalOpen"
+[servicio]="servicioSeleccionado"
+(closeModal)="cerrarModal()" 
+(saveServicio)="guardarServicio($event)">
+</app-servicio-modal>

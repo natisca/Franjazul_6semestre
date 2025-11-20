@@ -52,4 +52,9 @@ export class Navbar implements OnInit {
   navigateToRegistro(): void {
     this.router.navigate(['/registro']);
   }
+
+  scrollTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
 }

@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center space-y-4 mb-16">
-            <h2 class="text-3xl lg:text-4xl font-bold text-blue-950">
+            <h2 class="text-3xl lg:text-4xl font-bold text-blue-900">
                 Nuestros Servicios Profesionales
             </h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -17,7 +17,7 @@
             <div *ngFor="let service of services"
                 class="flex flex-col bg-white border border-blue-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <!-- Imagen con ícono -->
-                <div >
+                <div class="relative">
                     <img [src]="service.image" [alt]="service.title" class="w-full h-44 object-cover" />
 
                     <div
@@ -70,7 +70,7 @@
                 <div class="p-6 flex flex-col flex-grow space-y-4 bg-blue-200 border-t border-blue-400">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-lg font-semibold text-blue-950">
+                            <h3 class="text-lg font-semibold text-blue-900">
                                 {{ service.title }}
                             </h3>
                             <span class="bg-gray-300 text-blue-700 text-xs px-2 py-1 rounded-md">
@@ -91,7 +91,7 @@
                     <!-- Botón para solicitar servicio-->
                     <button
                         (click)="abrirForm()"
-                        class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 font-medium transition-colors">
+                        class="mt-6 w-full bg-blue-800 hover:bg-blue-600 text-white rounded-md py-2 font-medium transition-colors">
                         Solicitar Servicio
                     </button>
 

@@ -1,11 +1,11 @@
 <!-- Modal Overlay -->
 <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
   
-  <!-- Modal Content -->
-  <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+  <!-- Modal Content - ALTURA CONTROLADA -->
+  <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full flex flex-col" style="max-height: 90vh;">
     
-    <!-- Header -->
-    <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-lg">
+    <!-- Header - FIJO EN LA PARTE SUPERIOR -->
+    <div class="flex-shrink-0 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-lg">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -28,8 +28,8 @@
       </div>
     </div>
 
-    <!-- Body -->
-    <div class="p-6 space-y-6">
+    <!-- Body - SCROLLABLE -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-6">
 
       <!-- Mensajes -->
       <div *ngIf="errorMessage" class="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center gap-2">
@@ -58,19 +58,25 @@
             Seleccionar Servicios
           </h3>
 
-          <div class="flex gap-2 mb-3">
+          <div class="flex flex-col sm:flex-row gap-2 mb-3">
+            <!-- SELECT CON ALTURA MÁXIMA Y TEXTO TRUNCADO -->
             <select 
               formControlName="servicioSeleccionado"
-              class="flex-1 px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              class="flex-1 px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              style="max-height: 200px;">
               <option value="">-- Selecciona un servicio --</option>
-              <option *ngFor="let servicio of serviciosDisponibles" [value]="servicio.idServicio">
-                {{ servicio.nombreSer }} - {{ servicio.descripcionSer }}
+              <option 
+                *ngFor="let servicio of serviciosDisponibles" 
+                [value]="servicio.idServicio"
+                [title]="servicio.nombreSer + ' - ' + servicio.descripcionSer"
+                class="text-sm">
+                {{ truncarTexto(servicio.nombreSer, 40) }}
               </option>
             </select>
             <button 
               type="button"
               (click)="agregarServicio()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -81,14 +87,16 @@
           <!-- Servicios seleccionados -->
           <div *ngIf="serviciosSeleccionados.length > 0" class="space-y-2">
             <p class="text-sm font-medium text-blue-900">Servicios seleccionados:</p>
-            <div class="flex flex-wrap gap-2">
+            <div class="space-y-2">
               <div *ngFor="let servicio of serviciosSeleccionados" 
-                   class="flex items-center gap-2 bg-white border border-blue-300 px-3 py-2 rounded-lg">
-                <span class="text-sm font-medium text-blue-900">{{ servicio.nombreSer }}</span>
+                   class="flex items-start gap-2 bg-white border border-blue-300 px-3 py-2 rounded-lg">
+                <span class="text-sm font-medium text-blue-900 flex-1 break-words">
+                  {{ servicio.nombreSer }}
+                </span>
                 <button 
                   type="button"
                   (click)="quitarServicio(servicio.idServicio)"
-                  class="text-red-600 hover:text-red-800">
+                  class="text-red-600 hover:text-red-800 flex-shrink-0 mt-0.5">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -198,27 +206,30 @@
           </div>
         </div>
 
-        <!-- Botones -->
-        <div class="flex gap-4 pt-4 border-t">
-          <button 
-            type="button"
-            (click)="cerrarModal()"
-            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-            Cancelar
-          </button>
-          <button 
-            type="submit"
-            [disabled]="loading || solicitudForm.invalid || serviciosSeleccionados.length === 0"
-            class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-            <svg *ngIf="loading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>{{ loading ? 'Procesando...' : 'Solicitar Cita' }}</span>
-          </button>
-        </div>
-
       </form>
+    </div>
+
+    <!-- Footer - FIJO EN LA PARTE INFERIOR -->
+    <div class="flex-shrink-0 p-6 border-t bg-gray-50">
+      <div class="flex gap-4">
+        <button 
+          type="button"
+          (click)="cerrarModal()"
+          class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+          Cancelar
+        </button>
+        <button 
+          type="submit"
+          (click)="onSubmit()"
+          [disabled]="loading || solicitudForm.invalid || serviciosSeleccionados.length === 0"
+          class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          <svg *ngIf="loading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ loading ? 'Procesando...' : 'Solicitar Cita' }}</span>
+        </button>
+      </div>
     </div>
 
   </div>

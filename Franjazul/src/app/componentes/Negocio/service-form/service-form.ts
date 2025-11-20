@@ -156,7 +156,7 @@ export class ServiceForm implements OnInit {
         console.log('✅ Cita creada:', response);
         this.loading = false;
         this.successMessage = 'Cita solicitada exitosamente';
-        
+
         setTimeout(() => {
           this.cerrarModal();
         }, 2000);
@@ -171,5 +171,11 @@ export class ServiceForm implements OnInit {
 
   cerrarModal(): void {
     this.close.emit();
+  }
+
+  truncarTexto(texto: string, maxLength: number): string {
+    if (!texto) return '';
+    if (texto.length <= maxLength) return texto;
+    return texto.substring(0, maxLength) + '...';
   }
 }

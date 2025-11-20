@@ -9,7 +9,7 @@
       *ngFor="let tabla of filteredMenuTablas"
       [routerLink]="tabla.route"
       routerLinkActive="bg-blue-800 text-white"
-      class="bg-blue-50 hover:bg-blue-200 border border-blue-200 rounded-lg px-4 py-3 font-medium text-blue-900 shadow-sm transition cursor-pointer"
+      class="bg-gradient-to-r from-blue-50 to-blue-200 hover:from-blue-200 hover:to-blue-400 border border-blue-300 rounded-lg px-4 py-3 font-medium text-blue-900 shadow-sm transition cursor-pointer"
     >
       {{ tabla.label }}
     </a>

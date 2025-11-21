@@ -1,20 +1,31 @@
-// src/app/pages/citas/citas.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CitasService, Cita } from '../../../../services/citasService';
-import { CitaModalComponent } from '../../../modals/citas-modal/citas-modal'; 
+import { CitaModalComponent } from '../../../modals/citas-modal/citas-modal';
 
 @Component({
   selector: 'app-citas',
   standalone: true,
-  imports: [CommonModule, CitaModalComponent],
+  imports: [CommonModule, CitaModalComponent, FormsModule],
   templateUrl: './citas.html',
   styleUrls: ['./citas.css']
 })
 export class CitasComponent implements OnInit {
   citas: Cita[] = [];
+  citasFiltradas: Cita[] = [];
+  citasPaginadas: Cita[] = [];
   cargando: boolean = false;
   error: string = '';
+  
+  // Paginación
+  paginaActual: number = 1;
+  registrosPorPagina: number = 5;
+  totalPaginas: number = 0;
+  
+  // Filtrado
+  terminoBusqueda: string = '';
+  estadoFiltro: string = '';
   
   // Estados del modal
   isModalOpen: boolean = false;
@@ -37,6 +48,7 @@ export class CitasComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.citas = response.data;
+          this.aplicarFiltros();
           console.log('Citas cargadas:', this.citas);
         } else {
           this.mostrarError(response.message);
@@ -51,30 +63,130 @@ export class CitasComponent implements OnInit {
     });
   }
 
-  // Abrir modal para crear nueva cita
+  // ==================== FILTRADO ====================
+  
+  aplicarFiltros(): void {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+    
+    this.citasFiltradas = this.citas.filter(cita => {
+      // Filtro por término de búsqueda
+      const cumpleTermino = termino === '' || 
+        cita.idCita.toString().includes(termino) ||
+        this.obtenerNombreCompleto(cita.usuarioTecnico).toLowerCase().includes(termino) ||
+        this.obtenerNombreCompleto(cita.usuarioCreo).toLowerCase().includes(termino) ||
+        (cita.lugar.nombreLugar && cita.lugar.nombreLugar.toLowerCase().includes(termino)) ||
+        (cita.lugar.nombreLugar && cita.lugar.nombreLugar.toLowerCase().includes(termino)) ||
+        cita.estadoCita.nombreEc.toLowerCase().includes(termino) ||
+        (cita.observacionesCita && cita.observacionesCita.toLowerCase().includes(termino));
+      
+      // Filtro por estado
+      const cumpleEstado = this.estadoFiltro === '' || cita.estadoCita.nombreEc === this.estadoFiltro;
+      
+      return cumpleTermino && cumpleEstado;
+    });
+    
+    // Resetear a la primera página cuando se filtra
+    this.paginaActual = 1;
+    this.calcularPaginacion();
+  }
+
+  limpiarFiltros(): void {
+    this.terminoBusqueda = '';
+    this.estadoFiltro = '';
+    this.aplicarFiltros();
+  }
+
+  get estadosUnicos(): string[] {
+    const estados = this.citas.map(c => c.estadoCita.nombreEc);
+    return [...new Set(estados)].sort();
+  }
+
+  // ==================== PAGINACIÓN ====================
+  
+  calcularPaginacion(): void {
+    this.totalPaginas = Math.ceil(this.citasFiltradas.length / this.registrosPorPagina);
+    
+    if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
+      this.paginaActual = this.totalPaginas;
+    }
+    
+    this.actualizarCitasPaginadas();
+  }
+
+  actualizarCitasPaginadas(): void {
+    const inicio = (this.paginaActual - 1) * this.registrosPorPagina;
+    const fin = inicio + this.registrosPorPagina;
+    this.citasPaginadas = this.citasFiltradas.slice(inicio, fin);
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.actualizarCitasPaginadas();
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.actualizarCitasPaginadas();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.actualizarCitasPaginadas();
+    }
+  }
+
+  obtenerPaginas(): number[] {
+    const paginas: number[] = [];
+    const maxPaginasVisibles = 5;
+    
+    let inicio = Math.max(1, this.paginaActual - Math.floor(maxPaginasVisibles / 2));
+    let fin = Math.min(this.totalPaginas, inicio + maxPaginasVisibles - 1);
+    
+    if (fin - inicio < maxPaginasVisibles - 1) {
+      inicio = Math.max(1, fin - maxPaginasVisibles + 1);
+    }
+    
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+    
+    return paginas;
+  }
+
+  get indiceInicio(): number {
+    return (this.paginaActual - 1) * this.registrosPorPagina + 1;
+  }
+
+  get indiceFin(): number {
+    return Math.min(this.paginaActual * this.registrosPorPagina, this.citasFiltradas.length);
+  }
+
+  // ==================== MODAL ====================
+
   abrirModalNuevo(): void {
     this.citaSeleccionada = null;
     this.isModalOpen = true;
   }
 
-  // Abrir modal para editar cita existente
   abrirModalEditar(cita: Cita): void {
     this.citaSeleccionada = { ...cita };
     this.isModalOpen = true;
   }
 
-  // Cerrar modal
   cerrarModal(): void {
     this.isModalOpen = false;
     this.citaSeleccionada = null;
   }
 
-  // Guardar cita (crear o actualizar)
   guardarCita(citaData: Partial<Cita>): void {
     this.guardando = true;
 
     if (this.citaSeleccionada && this.citaSeleccionada.idCita) {
-      // Actualizar cita existente
       this.citasService.actualizar(this.citaSeleccionada.idCita, citaData).subscribe({
         next: (response) => {
           if (response.success) {
@@ -92,7 +204,6 @@ export class CitasComponent implements OnInit {
         }
       });
     } else {
-      // Crear nueva cita
       this.citasService.crear(citaData).subscribe({
         next: (response) => {
           if (response.success) {
@@ -112,7 +223,6 @@ export class CitasComponent implements OnInit {
     }
   }
 
-  // Eliminar cita
   eliminarCita(id: number): void {
     const confirmar = confirm(
       `¿Está seguro de que desea eliminar la cita #${id}?\n\nEsta acción no se puede deshacer.`
@@ -137,7 +247,8 @@ export class CitasComponent implements OnInit {
     });
   }
 
-  // Obtener nombre completo del usuario
+  // ==================== UTILIDADES ====================
+
   obtenerNombreCompleto(usuario: any): string {
     if (!usuario) return '';
     const partes = [
@@ -148,7 +259,6 @@ export class CitasComponent implements OnInit {
     return partes.join(' ');
   }
 
-  // Formatear fecha
   formatearFecha(fecha: string): string {
     if (!fecha) return '';
     return new Date(fecha).toLocaleString('es-ES', {
@@ -160,7 +270,16 @@ export class CitasComponent implements OnInit {
     });
   }
 
-  // Manejo de errores de operaciones
+  getEstadoColor(estado: string): string {
+    const colores: { [key: string]: string } = {
+      'PENDIENTE': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      'COMPLETADA': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      'CANCELADA': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      'REAGENDADA': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+    };
+    return colores[estado] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+  }
+
   private manejarErrorOperacion(err: any, operacion: string): void {
     console.error(`Error al ${operacion}:`, err);
     
@@ -179,13 +298,11 @@ export class CitasComponent implements OnInit {
     this.mostrarError(mensajeError);
   }
 
-  // Mostrar mensaje de error
   private mostrarError(mensaje: string): void {
     this.error = mensaje;
     alert('❌ ' + mensaje);
   }
 
-  // Mostrar mensaje de éxito
   private mostrarExito(mensaje: string): void {
     alert('✅ ' + mensaje);
   }

@@ -1,21 +1,31 @@
-
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { UsuariosService, Usuario } from '../../../../services/usuariosService';
-import { UsuarioModalComponent } from '../../../modals/usuario-modal/usuario-modal'; 
+import { UsuarioModalComponent } from '../../../modals/usuario-modal/usuario-modal';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, RouterModule, UsuarioModalComponent],
+  imports: [CommonModule, RouterModule, UsuarioModalComponent, FormsModule],
   templateUrl: './usuarios.html',
   styleUrls: ['./usuarios.css']
 })
 export class Usuarios implements OnInit {
   usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
+  usuariosPaginados: Usuario[] = [];
   cargando: boolean = false;
   error: string = '';
+  
+  // Paginación
+  paginaActual: number = 1;
+  registrosPorPagina: number = 5;
+  totalPaginas: number = 0;
+  
+  // Filtrado
+  terminoBusqueda: string = '';
   
   // Estados del modal
   isModalOpen: boolean = false;
@@ -38,6 +48,7 @@ export class Usuarios implements OnInit {
       next: (response) => {
         if (response.success) {
           this.usuarios = response.data;
+          this.aplicarFiltros();
           console.log('Usuarios cargados:', this.usuarios);
         } else {
           this.mostrarError(response.message);
@@ -52,25 +63,123 @@ export class Usuarios implements OnInit {
     });
   }
 
-  // Abrir modal para crear nuevo usuario
+  // ==================== FILTRADO ====================
+  
+  aplicarFiltros(): void {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+    
+    if (termino === '') {
+      this.usuariosFiltrados = [...this.usuarios];
+    } else {
+      this.usuariosFiltrados = this.usuarios.filter(usuario => {
+        const nombreCompleto = this.obtenerNombreCompleto(usuario).toLowerCase();
+        const email = usuario.emailUs.toLowerCase();
+        const id = usuario.idUsuario.toLowerCase();
+        const cargo = usuario.cargoDeUsuario.nombreCargo.toLowerCase();
+        const perfil = usuario.perfilDeUsuario.nombrePer?.toLowerCase();
+        
+        return nombreCompleto.includes(termino) ||
+               email.includes(termino) ||
+               id.includes(termino) ||
+               cargo.includes(termino) ||
+               perfil?.includes(termino)
+      });
+    }
+    
+    // Resetear a la primera página cuando se filtra
+    this.paginaActual = 1;
+    this.calcularPaginacion();
+  }
+
+  limpiarFiltro(): void {
+    this.terminoBusqueda = '';
+    this.aplicarFiltros();
+  }
+
+  // ==================== PAGINACIÓN ====================
+  
+  calcularPaginacion(): void {
+    this.totalPaginas = Math.ceil(this.usuariosFiltrados.length / this.registrosPorPagina);
+    
+    // Ajustar página actual si está fuera de rango
+    if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
+      this.paginaActual = this.totalPaginas;
+    }
+    
+    this.actualizarUsuariosPaginados();
+  }
+
+  actualizarUsuariosPaginados(): void {
+    const inicio = (this.paginaActual - 1) * this.registrosPorPagina;
+    const fin = inicio + this.registrosPorPagina;
+    this.usuariosPaginados = this.usuariosFiltrados.slice(inicio, fin);
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.actualizarUsuariosPaginados();
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.actualizarUsuariosPaginados();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.actualizarUsuariosPaginados();
+    }
+  }
+
+  obtenerPaginas(): number[] {
+    const paginas: number[] = [];
+    const maxPaginasVisibles = 5;
+    
+    let inicio = Math.max(1, this.paginaActual - Math.floor(maxPaginasVisibles / 2));
+    let fin = Math.min(this.totalPaginas, inicio + maxPaginasVisibles - 1);
+    
+    // Ajustar inicio si estamos cerca del final
+    if (fin - inicio < maxPaginasVisibles - 1) {
+      inicio = Math.max(1, fin - maxPaginasVisibles + 1);
+    }
+    
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+    
+    return paginas;
+  }
+
+  get indiceInicio(): number {
+    return (this.paginaActual - 1) * this.registrosPorPagina + 1;
+  }
+
+  get indiceFin(): number {
+    return Math.min(this.paginaActual * this.registrosPorPagina, this.usuariosFiltrados.length);
+  }
+
+  // ==================== MODAL ====================
+
   abrirModalNuevo(): void {
     this.usuarioSeleccionado = null;
     this.isModalOpen = true;
   }
 
-  // Abrir modal para editar usuario existente
   abrirModalEditar(usuario: Usuario): void {
     this.usuarioSeleccionado = { ...usuario };
     this.isModalOpen = true;
   }
 
-  // Cerrar modal
   cerrarModal(): void {
     this.isModalOpen = false;
     this.usuarioSeleccionado = null;
   }
 
-  // Guardar usuario (crear o actualizar)
   guardarUsuario(usuarioData: Partial<Usuario>): void {
     this.guardando = true;
 
@@ -113,7 +222,6 @@ export class Usuarios implements OnInit {
     }
   }
 
-  // Eliminar usuario
   eliminarUsuario(idUsuario: string, nombreCompleto: string): void {
     const confirmar = confirm(
       `¿Está seguro de que desea eliminar al usuario "${nombreCompleto}"?\n\nEsta acción no se puede deshacer.`
@@ -138,7 +246,8 @@ export class Usuarios implements OnInit {
     });
   }
 
-  // Obtener nombre completo del usuario
+  // ==================== UTILIDADES ====================
+
   obtenerNombreCompleto(usuario: Usuario): string {
     let nombreCompleto = `${usuario.nombreUs} ${usuario.apellidoUs}`;
     if (usuario.apellido2Us) {
@@ -147,13 +256,11 @@ export class Usuarios implements OnInit {
     return nombreCompleto;
   }
 
-  // Formatear teléfono para mostrar
   formatearTelefono(telefono: number): string {
     const telefonoStr = telefono.toString();
     return `${telefonoStr.substring(0, 3)}-${telefonoStr.substring(3, 6)}-${telefonoStr.substring(6)}`;
   }
 
-  // Manejo de errores de operaciones
   private manejarErrorOperacion(err: any, operacion: string): void {
     console.error(`Error al ${operacion}:`, err);
     
@@ -172,13 +279,11 @@ export class Usuarios implements OnInit {
     this.mostrarError(mensajeError);
   }
 
-  // Mostrar mensaje de error
   private mostrarError(mensaje: string): void {
     this.error = mensaje;
     alert('❌ ' + mensaje);
   }
 
-  // Mostrar mensaje de éxito
   private mostrarExito(mensaje: string): void {
     alert('✅ ' + mensaje);
   }

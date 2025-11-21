@@ -1,4 +1,3 @@
-
 <div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -39,6 +38,54 @@
         </button>
     </div>
 
+    <!-- Barra de búsqueda y filtros -->
+    <div class="mb-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- Búsqueda general -->
+            <div class="md:col-span-2 relative">
+                <input
+                    type="text"
+                    [(ngModel)]="terminoBusqueda"
+                    (ngModelChange)="aplicarFiltros()"
+                    placeholder="Buscar por ID, técnico, cliente, lugar..."
+                    class="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+            </div>
+
+            <!-- Filtro por estado -->
+            <div class="flex gap-2">
+                <select
+                    [(ngModel)]="estadoFiltro"
+                    (ngModelChange)="aplicarFiltros()"
+                    class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                >
+                    <option value="">Todos los estados</option>
+                    <option *ngFor="let estado of estadosUnicos" [value]="estado">
+                        {{ estado }}
+                    </option>
+                </select>
+
+                <button
+                    *ngIf="terminoBusqueda || estadoFiltro"
+                    (click)="limpiarFiltros()"
+                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 flex items-center gap-2"
+                    title="Limpiar filtros"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+            Mostrando {{ citasFiltradas.length }} de {{ citas.length }} citas
+        </p>
+    </div>
+
     <!-- Estado de carga -->
     <div *ngIf="cargando" class="flex flex-col justify-center items-center py-20">
         <div class="relative">
@@ -52,7 +99,7 @@
     <div *ngIf="!cargando" class="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gradient-to-r from-blue-50 to-blue-400 dark:from-gray-700 dark:to-gray-700">
+                <thead class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             ID
@@ -76,19 +123,20 @@
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     <!-- Mensaje cuando no hay citas -->
-                    <tr *ngIf="citas.length === 0">
+                    <tr *ngIf="citasPaginadas.length === 0">
                         <td colspan="6" class="px-6 py-16 text-center">
                             <div class="flex flex-col items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                                 </svg>
                                 <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">
-                                    No hay citas registradas
+                                    {{ terminoBusqueda || estadoFiltro ? 'No se encontraron citas' : 'No hay citas registradas' }}
                                 </p>
                                 <p class="text-gray-400 dark:text-gray-500 text-sm mb-4">
-                                    Comienza creando tu primera cita
+                                    {{ terminoBusqueda || estadoFiltro ? 'Intenta con otros criterios de búsqueda' : 'Comienza creando tu primera cita' }}
                                 </p>
                                 <button 
+                                    *ngIf="!terminoBusqueda && !estadoFiltro"
                                     (click)="abrirModalNuevo()"
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
                                 >
@@ -103,7 +151,7 @@
 
                     <!-- Filas de datos -->
                     <tr 
-                        *ngFor="let cita of citas" 
+                        *ngFor="let cita of citasPaginadas" 
                         class="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150 group"
                     >
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -150,7 +198,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-yellow-900 dark:text-yellow-200">
+                            <span [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + getEstadoColor(cita.estadoCita.nombreEc)">
                                 {{ cita.estadoCita.nombreEc }}
                             </span>
                         </td>
@@ -185,6 +233,84 @@
         </div>
     </div>
 
+    <!-- Paginación -->
+    <div 
+        *ngIf="!cargando && citasFiltradas.length > 0" 
+        class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+    >
+        <!-- Información de registros -->
+        <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            <span>
+                Mostrando 
+                <span class="font-bold text-blue-600 dark:text-blue-400">{{ indiceInicio }}</span>
+                a 
+                <span class="font-bold text-blue-600 dark:text-blue-400">{{ indiceFin }}</span>
+                de 
+                <span class="font-bold text-blue-600 dark:text-blue-400">{{ citasFiltradas.length }}</span>
+                {{ citasFiltradas.length === 1 ? 'cita' : 'citas' }}
+            </span>
+        </div>
+
+        <!-- Controles de paginación -->
+        <div class="flex items-center gap-2">
+            <button
+                (click)="cambiarPagina(1)"
+                [disabled]="paginaActual === 1"
+                class="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Primera página"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                </svg>
+            </button>
+
+            <button
+                (click)="paginaAnterior()"
+                [disabled]="paginaActual === 1"
+                class="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </button>
+
+            <button
+                *ngFor="let pagina of obtenerPaginas()"
+                (click)="cambiarPagina(pagina)"
+                [class.bg-blue-600]="pagina === paginaActual"
+                [class.text-white]="pagina === paginaActual"
+                [class.hover:bg-gray-50]="pagina !== paginaActual"
+                [class.dark:hover:bg-gray-700]="pagina !== paginaActual"
+                class="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors font-medium"
+            >
+                {{ pagina }}
+            </button>
+
+            <button
+                (click)="paginaSiguiente()"
+                [disabled]="paginaActual === totalPaginas"
+                class="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
+
+            <button
+                (click)="cambiarPagina(totalPaginas)"
+                [disabled]="paginaActual === totalPaginas"
+                class="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Última página"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Component -->

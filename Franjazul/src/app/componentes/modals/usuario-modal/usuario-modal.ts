@@ -1,6 +1,5 @@
-
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Usuario } from '../../../services/usuariosService';
 import { Perfil, PerfilesService } from '../../../services/perfilesService';
@@ -13,7 +12,7 @@ import { Cargo, CargosService } from '../../../services/cargosService';
   templateUrl: './usuario-modal.html',
   styleUrls: ['./usuario-modal.css']
 })
-export class UsuarioModalComponent implements OnInit {
+export class UsuarioModalComponent implements OnInit, OnChanges {
   @Input() usuario: Usuario | null = null;
   @Input() isOpen: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
@@ -25,7 +24,6 @@ export class UsuarioModalComponent implements OnInit {
   cargos: Cargo[] = [];
   cargandoPerfiles: boolean = false;
   cargandoCargos: boolean = false;
-  mostrarPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,9 +34,8 @@ export class UsuarioModalComponent implements OnInit {
       idUsuario: ['', [Validators.required, Validators.maxLength(10)]],
       nombreUs: ['', [Validators.required, Validators.maxLength(70)]],
       apellidoUs: ['', [Validators.required, Validators.maxLength(50)]],
-      apellido2Us: ['', [Validators.maxLength(50)]],
+      apellido2Us: [''],
       emailUs: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      passwordUs: ['', [Validators.required, Validators.maxLength(50)]],
       telefonoUs: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       idPerfil: [null, [Validators.required]],
       nombreCargo: ['', [Validators.required]]
@@ -48,23 +45,51 @@ export class UsuarioModalComponent implements OnInit {
   ngOnInit(): void {
     this.cargarPerfiles();
     this.cargarCargos();
-    
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Se ejecuta cada vez que cambian los @Input
+    if (changes['isOpen'] && this.isOpen) {
+      this.inicializarFormulario();
+    }
+  }
+
+  inicializarFormulario(): void {
     if (this.usuario) {
+      // MODO EDICIÓN
       this.isEditMode = true;
+      
       this.usuarioForm.patchValue({
         idUsuario: this.usuario.idUsuario,
         nombreUs: this.usuario.nombreUs,
         apellidoUs: this.usuario.apellidoUs,
-        apellido2Us: this.usuario.apellido2Us,
+        apellido2Us: this.usuario.apellido2Us || '',
         emailUs: this.usuario.emailUs,
-        passwordUs: this.usuario.passwordUs,
         telefonoUs: this.usuario.telefonoUs,
-        idPerfil: this.usuario.perfilDeUsuario.idPer,
-        nombreCargo: this.usuario.cargoDeUsuario.nombreCargo
+        idPerfil: this.usuario.perfilDeUsuario?.idPer || null,
+        nombreCargo: this.usuario.cargoDeUsuario?.nombreCargo || ''
       });
       
       // En modo edición, el ID no se puede cambiar
       this.usuarioForm.get('idUsuario')?.disable();
+    } else {
+      // MODO CREACIÓN
+      this.isEditMode = false;
+      
+      // Resetear completamente el formulario
+      this.usuarioForm.reset({
+        idUsuario: '',
+        nombreUs: '',
+        apellidoUs: '',
+        apellido2Us: '',
+        emailUs: '',
+        telefonoUs: '',
+        idPerfil: null,
+        nombreCargo: ''
+      });
+      
+      // Asegurarse de que el ID esté habilitado
+      this.usuarioForm.get('idUsuario')?.enable();
     }
   }
 
@@ -98,10 +123,6 @@ export class UsuarioModalComponent implements OnInit {
     });
   }
 
-  toggleMostrarPassword(): void {
-    this.mostrarPassword = !this.mostrarPassword;
-  }
-
   onSubmit(): void {
     if (this.usuarioForm.valid) {
       const formValue = this.isEditMode ? this.usuarioForm.getRawValue() : this.usuarioForm.value;
@@ -112,8 +133,7 @@ export class UsuarioModalComponent implements OnInit {
         apellidoUs: formValue.apellidoUs,
         apellido2Us: formValue.apellido2Us || null,
         emailUs: formValue.emailUs,
-        passwordUs: formValue.passwordUs,
-        telefonoUs: Number(formValue.telefonoUs),
+        telefonoUs: formValue.telefonoUs,
         perfilDeUsuario: {
           idPer: formValue.idPerfil
         },
@@ -121,12 +141,18 @@ export class UsuarioModalComponent implements OnInit {
           nombreCargo: formValue.nombreCargo
         }
       };
+
+      // agregar la contraseña por defecto
+      if (!this.isEditMode) {
+        (usuarioData as any).passwordUs = 'franjazul123';
+      }
       
       this.saveUsuario.emit(usuarioData);
     }
   }
 
   onClose(): void {
+    this.usuarioForm.reset();
     this.closeModal.emit();
   }
 
@@ -136,7 +162,6 @@ export class UsuarioModalComponent implements OnInit {
   get apellidoUs() { return this.usuarioForm.get('apellidoUs'); }
   get apellido2Us() { return this.usuarioForm.get('apellido2Us'); }
   get emailUs() { return this.usuarioForm.get('emailUs'); }
-  get passwordUs() { return this.usuarioForm.get('passwordUs'); }
   get telefonoUs() { return this.usuarioForm.get('telefonoUs'); }
   get idPerfil() { return this.usuarioForm.get('idPerfil'); }
   get nombreCargo() { return this.usuarioForm.get('nombreCargo'); }

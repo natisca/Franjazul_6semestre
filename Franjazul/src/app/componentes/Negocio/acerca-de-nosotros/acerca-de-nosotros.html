@@ -1,0 +1,245 @@
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50  to-blue-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-blue-200 to-blue-600 text-white py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+          La Alianza Franjazul & EcoMIP
+        </h1>
+        <p class="text-xl md:text-2xl font-light mb-8 max-w-3xl mx-auto">
+          Especialistas en Manejo Integrado de Plagas con compromiso ambiental y respaldo técnico permanente
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button (click)="scrollToSection('quienes-somos')" class="px-8 py-3 bg-white text-blue-600 rounded-full font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+            Conócenos
+          </button>
+          <button (click)="scrollToSection('contacto')" class="px-8 py-3 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200">
+            Contactar
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certificaciones -->
+  <section class="py-12 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-wrap justify-center items-center gap-8">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-2">
+            <span class="text-3xl">✅</span>
+          </div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Sello Verde</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Alcaldía de Medellín</p>
+        </div>
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
+            <span class="text-3xl">🏥</span>
+          </div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Concepto Sanitario</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Nº 10014011875</p>
+        </div>
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-100 dark:bg-yellow-900 mb-2">
+            <span class="text-3xl">🛡️</span>
+          </div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">SG-SST</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Calificación Favorable</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ¿Quiénes Somos? -->
+  <section id="quienes-somos" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">¿Quiénes Somos?</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+            En <span class="font-bold text-blue-600 dark:text-blue-400">La Alianza Franjazul y EcoMIP</span> somos especialistas en <span class="font-semibold">Manejo Integrado de Plagas</span>, ofreciendo soluciones efectivas, responsables y adaptadas a los sectores industrial, comercial y hotelero.
+          </p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+            Contamos con el <span class="font-semibold text-green-600 dark:text-green-400">Sello Verde</span> que certifica nuestro compromiso ambiental y el uso de métodos sostenibles que protegen tanto los procesos productivos como el entorno.
+          </p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+            Cumplimos con todos los requisitos y normativas exigidas por la <span class="font-semibold">Secretaría de Salud de Medellín</span>, garantizando un servicio confiable, legalmente respaldado y alineado con los más altos estándares sanitarios.
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900 dark:to-teal-900 p-8 rounded-2xl shadow-xl">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Nuestro Compromiso</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-gray-700 dark:text-gray-300">Personal altamente calificado y certificado</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-gray-700 dark:text-gray-300">Cumplimiento normativo y responsabilidad ambiental</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-gray-700 dark:text-gray-300">Respaldo técnico permanente y asesoría continua</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-gray-700 dark:text-gray-300">Reportes claros y documentación auditable</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nuestros Servicios -->
+  <section class="py-20 px-6 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Nuestros Servicios</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto rounded-full"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Soluciones integrales de control de plagas con tecnología avanzada y productos certificados
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let servicio of servicios" class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-5xl mb-4">{{ servicio.icon }}</div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{{ servicio.titulo }}</h3>
+          <p class="text-gray-600 dark:text-gray-300">{{ servicio.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectores que Atendemos -->
+  <section class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Sectores que Atendemos</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div *ngFor="let sector of sectores" class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="text-5xl">{{ sector.icon }}</div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ sector.titulo }}</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ sector.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ventajas -->
+  <section class="py-20 px-6 bg-gradient-to-r from-blue-600 to-teal-600 text-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4">Ventajas de Contratarnos</h2>
+        <div class="w-24 h-1 bg-white mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div *ngFor="let ventaja of ventajas" class="flex items-start gap-4 bg-white/10 backdrop-blur-sm p-6 rounded-lg hover:bg-white/20 transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-lg font-medium">{{ ventaja }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="py-20 px-6 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Contáctanos</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-lg">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Teléfono/WhatsApp</h3>
+          <p class="text-blue-600 dark:text-blue-400 font-semibold">{{ contacto.telefono }}</p>
+        </div>
+
+        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-lg">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 text-white mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Dirección</h3>
+          <p class="text-gray-700 dark:text-gray-300">{{ contacto.direccion }}</p>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">{{ contacto.ciudad }}</p>
+        </div>
+
+        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-lg">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-600 text-white mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Email</h3>
+          <p class="text-purple-600 dark:text-purple-400 font-semibold break-all">{{ contacto.email }}</p>
+        </div>
+
+        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-lg">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-600 text-white mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Concepto Sanitario</h3>
+          <p class="text-teal-600 dark:text-teal-400 font-semibold">{{ contacto.concepto }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="py-16 px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        ¿Listo para proteger tu espacio?
+      </h2>
+      <p class="text-xl mb-8 text-gray-300">
+        Contáctanos hoy y recibe una asesoría técnica gratuita
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a routerLink="/registro" class="px-8 py-4 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+          Solicitar Servicio
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>

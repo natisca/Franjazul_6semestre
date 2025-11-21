@@ -1,0 +1,59 @@
+
+:host {
+  display: block;
+}
+
+/* Animación de apertura del acordeón */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Transición suave para el icono de flecha */
+svg {
+  transition: transform 0.3s ease;
+}
+
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Estilos para los botones de categoría */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* Sticky header con sombra en scroll */
+.sticky {
+  transition: box-shadow 0.3s ease;
+}
+
+/* Mejoras para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .flex-wrap button {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+}

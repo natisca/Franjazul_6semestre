@@ -39,6 +39,8 @@ import { CertificadosComponent } from './componentes/app_propiedades/data/certif
 import { authGuard } from './guards/authGuard';
 import { roleGuard } from './guards/roleGuard';
 import { publicGuard } from './guards/publicGuard';
+import { AcercaDeNosotrosComponent } from './componentes/Negocio/acerca-de-nosotros/acerca-de-nosotros';
+import { AyudaComponent } from './componentes/Negocio/ayuda/ayuda';
 
 export const routes: Routes = [
 
@@ -67,6 +69,14 @@ export const routes: Routes = [
     {
         path: 'cambiar-password',
         component: CambioPassword
+    },
+    {
+        path: 'acerca-de-nosotros',
+        component: AcercaDeNosotrosComponent
+    },
+    {
+        path: 'ayuda',
+        component: AyudaComponent
     },
 
     //Interno/dashboard

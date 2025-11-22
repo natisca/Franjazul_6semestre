@@ -94,23 +94,32 @@
                         class="mt-6 w-full bg-blue-800 hover:bg-blue-600 text-white rounded-md py-2 font-medium transition-colors">
                         Solicitar Servicio
                     </button>
-
-                    <app-service-form *ngIf="mostrarForm" (close)="cerrarForm()"></app-service-form>
-
                 </div>
             </div>
         </div>
 
         <div class="text-center mt-16">
-            <div class="bg-blue-50 rounded-2xl p-8 border border-blue-200 shadow-sm">
+            <div class="bg-blue-200 rounded-2xl p-8 border border-blue-400 shadow-sm">
                 <h3 class="text-2xl font-bold text-blue-950 mb-4">
                     ¿Necesitas certificado de la fumigación?
                 </h3>
                 <button
-                    class="bg-blue-900 hover:bg-blue-800 text-white rounded-md px-6 py-3 font-medium transition-colors">
+                    (click)="abrirModalCertificado()"
+                    class="bg-blue-800 hover:bg-blue-600 text-white rounded-md px-6 py-3 font-medium transition-colors">
                     Solicitar certificado
                 </button>
             </div>
         </div>
     </div>
 </section>
+
+
+<app-service-form 
+    *ngIf="mostrarForm" 
+    (close)="cerrarForm()">
+</app-service-form>
+
+<app-certificado-modal  
+    *ngIf="mostrarFormCertificado" 
+    (closeModal)="cerrarFormCertificado()">
+</app-certificado-modal>

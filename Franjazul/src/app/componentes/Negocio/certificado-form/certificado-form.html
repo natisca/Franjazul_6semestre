@@ -1,0 +1,180 @@
+
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300"
+  (click)="cerrar()">
+  
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4 transform transition-transform duration-300"
+    (click)="$event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-t-xl flex items-center justify-between z-10">
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+        </svg>
+        <div>
+          <h2 class="text-xl font-bold">Solicitar Certificado</h2>
+          <p class="text-sm text-blue-100">Completa la información requerida</p>
+        </div>
+      </div>
+      <button
+        (click)="cerrar()"
+        class="text-white hover:bg-white/20 rounded-full p-2 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Aviso Importante -->
+    <div class="mx-6 mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg">
+      <div class="flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-1">Información Importante</p>
+          <p class="text-xs text-yellow-700 dark:text-yellow-300">
+            Se descargará únicamente el último certificado asociado a tu cuenta. 
+            Si necesitas un certificado anterior, comunícate al 
+            <span class="font-semibold">323 705 06 75</span> o envía un correo a 
+            <span class="font-semibold">servicio.laalianza@gmail.com</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="certificadoForm" class="p-6 space-y-6">
+      
+      <!-- Tipo de Documento -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Tipo de Documento *
+        </label>
+        <div class="grid grid-cols-2 gap-4">
+          <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
+            [class.border-blue-600]="certificadoForm.get('tipoDocumento')?.value === 'CC'"
+            [class.bg-blue-50]="certificadoForm.get('tipoDocumento')?.value === 'CC'"
+            [class.dark:bg-blue-900/20]="certificadoForm.get('tipoDocumento')?.value === 'CC'"
+            [class.border-gray-300]="certificadoForm.get('tipoDocumento')?.value !== 'CC'"
+            [class.dark:border-gray-600]="certificadoForm.get('tipoDocumento')?.value !== 'CC'">
+            <input
+              type="radio"
+              formControlName="tipoDocumento"
+              value="CC"
+              class="w-4 h-4 text-blue-600">
+            <span class="ml-3 font-medium text-gray-900 dark:text-gray-100">Cédula (CC)</span>
+          </label>
+
+          <label class="relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
+            [class.border-blue-600]="certificadoForm.get('tipoDocumento')?.value === 'NIT'"
+            [class.bg-blue-50]="certificadoForm.get('tipoDocumento')?.value === 'NIT'"
+            [class.dark:bg-blue-900/20]="certificadoForm.get('tipoDocumento')?.value === 'NIT'"
+            [class.border-gray-300]="certificadoForm.get('tipoDocumento')?.value !== 'NIT'"
+            [class.dark:border-gray-600]="certificadoForm.get('tipoDocumento')?.value !== 'NIT'">
+            <input
+              type="radio"
+              formControlName="tipoDocumento"
+              value="NIT"
+              class="w-4 h-4 text-blue-600">
+            <span class="ml-3 font-medium text-gray-900 dark:text-gray-100">NIT Empresa</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Campos para CC -->
+      <div *ngIf="certificadoForm.get('tipoDocumento')?.value === 'CC'">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Cédula de Ciudadanía *
+        </label>
+        <input
+          type="text"
+          formControlName="cedula"
+          placeholder="Ingresa tu número de cédula"
+          class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+          [class.border-red-500]="certificadoForm.get('cedula')?.invalid && certificadoForm.get('cedula')?.touched">
+        <p *ngIf="certificadoForm.get('cedula')?.invalid && certificadoForm.get('cedula')?.touched" class="mt-1 text-sm text-red-600 dark:text-red-400">
+          La cédula es requerida y debe coincidir con tu usuario
+        </p>
+      </div>
+
+      <!-- Campos para NIT -->
+      <div *ngIf="certificadoForm.get('tipoDocumento')?.value === 'NIT'" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            NIT de la Empresa *
+          </label>
+          <input
+            type="text"
+            formControlName="nit"
+            placeholder="Ej: 900123456-7"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Nombre de la Empresa *
+          </label>
+          <input
+            type="text"
+            formControlName="nombreEmpresa"
+            placeholder="Razón social completa"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            RUT (Registro Único Tributario) *
+          </label>
+          <input
+            type="text"
+            formControlName="rut"
+            placeholder="Número del RUT"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Cédula del Solicitante *
+          </label>
+          <input
+            type="text"
+            formControlName="cedulaSolicitante"
+            placeholder="Tu número de cédula"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Debe coincidir con tu usuario para validación
+          </p>
+        </div>
+      </div>
+
+      <!-- Mensaje de Error -->
+      <div *ngIf="error" class="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-lg">
+        <p class="text-sm text-red-700 dark:text-red-300">{{ error }}</p>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3 pt-4">
+        <button
+          type="button"
+          (click)="cerrar()"
+          class="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="generarCertificado()"
+          [disabled]="certificadoForm.invalid || generando"
+          class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2">
+          <svg *ngIf="generando" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ generando ? 'Generando...' : 'Generar Certificado' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

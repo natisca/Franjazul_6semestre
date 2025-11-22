@@ -48,4 +48,22 @@ export class CertificadosService {
     console.error('Error:', error);
     return throwError(() => error);
   }
+
+
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    //>>>>>>>>>>>>>>endpoint Solicitar Certificado<<<<<<<<<<<<<<<
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+
+  generar(solicitud: any): Observable<Blob> {
+    return this.http.post(
+      `${this.apiUrl}/generar`,
+      solicitud,
+      { responseType: 'blob' }
+    ).pipe(catchError(this.handleError));
+  }
+
 }

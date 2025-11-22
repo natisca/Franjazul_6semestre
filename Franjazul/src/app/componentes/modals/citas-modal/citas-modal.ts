@@ -1,7 +1,5 @@
-// src/app/components/modals/cita-modal/cita-modal.component.ts
-
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Cita } from '../../../services/citasService';
 import { UsuariosService } from '../../../services/usuariosService';
@@ -16,7 +14,7 @@ import { EstadoCitaService } from '../../../services/estadoCitaService';
   templateUrl: './citas-modal.html',
   styleUrls: ['./citas-modal.css']
 })
-export class CitaModalComponent implements OnInit {
+export class CitaModalComponent implements OnInit, OnChanges {
   @Input() cita: Cita | null = null;
   @Input() isOpen: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
@@ -51,18 +49,41 @@ export class CitaModalComponent implements OnInit {
     });
   }
 
+  // ✅ Se mantiene ngOnInit para cargar datos de selects
   ngOnInit(): void {
     this.cargarDatos();
-    
-    if (this.cita) {
+  }
+
+  // ✅ AGREGADO: Detectar cambios en los inputs
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['cita'] || changes['isOpen']) {
+      this.actualizarFormulario();
+    }
+  }
+
+  // ✅ NUEVO: Método para actualizar el formulario según el modo
+  private actualizarFormulario(): void {
+    if (this.cita && this.isOpen) {
+      // Modo EDICIÓN
       this.isEditMode = true;
       this.citaForm.patchValue({
         observacionesCita: this.cita.observacionesCita,
-        idUsuarioTecnico: this.cita.usuarioTecnico.idUsuario,
-        idUsuarioCreo: this.cita.usuarioCreo.idUsuario,
-        idFranja: this.cita.franjaHoraria.idFranja,
-        idLugar: this.cita.lugar.idLugar,
-        nombreEc: this.cita.estadoCita.nombreEc
+        idUsuarioTecnico: this.cita.usuarioTecnico?.idUsuario || null,
+        idUsuarioCreo: this.cita.usuarioCreo?.idUsuario || null,
+        idFranja: this.cita.franjaHoraria?.idFranja || null,
+        idLugar: this.cita.lugar?.idLugar || null,
+        nombreEc: this.cita.estadoCita?.nombreEc || null
+      });
+    } else if (this.isOpen) {
+      // Modo CREACIÓN
+      this.isEditMode = false;
+      this.citaForm.reset({
+        observacionesCita: '',
+        idUsuarioTecnico: null,
+        idUsuarioCreo: null,
+        idFranja: null,
+        idLugar: null,
+        nombreEc: null
       });
     }
   }
@@ -75,10 +96,10 @@ export class CitaModalComponent implements OnInit {
       next: (r) => { 
         if (r.success) {
           this.tecnicos = r.data;
-          console.log('Técnicos cargados:', this.tecnicos);
+          console.log('✅ Técnicos cargados:', this.tecnicos.length);
         }
       },
-      error: (err) => console.error('Error cargando técnicos:', err)
+      error: (err) => console.error('❌ Error cargando técnicos:', err)
     });
     
     // Cargar clientes (usuarios con cargo CLIENTE)
@@ -86,29 +107,42 @@ export class CitaModalComponent implements OnInit {
       next: (r) => { 
         if (r.success) {
           this.clientes = r.data;
-          console.log('Clientes cargados:', this.clientes);
+          console.log('✅ Clientes cargados:', this.clientes.length);
         }
       },
-      error: (err) => console.error('Error cargando clientes:', err)
+      error: (err) => console.error('❌ Error cargando clientes:', err)
     });
     
     this.franjasService.obtenerTodos().subscribe({
-      next: (r) => { if (r.success) this.franjas = r.data; },
-      error: (err) => console.error('Error cargando franjas:', err)
+      next: (r) => { 
+        if (r.success) {
+          this.franjas = r.data;
+          console.log('✅ Franjas cargadas:', this.franjas.length);
+        }
+      },
+      error: (err) => console.error('❌ Error cargando franjas:', err)
     });
     
     this.lugaresService.obtenerTodos().subscribe({
-      next: (r) => { if (r.success) this.lugares = r.data; },
-      error: (err) => console.error('Error cargando lugares:', err)
+      next: (r) => { 
+        if (r.success) {
+          this.lugares = r.data;
+          console.log('✅ Lugares cargados:', this.lugares.length);
+        }
+      },
+      error: (err) => console.error('❌ Error cargando lugares:', err)
     });
     
     this.estadoCitaService.obtenerTodos().subscribe({
       next: (r) => { 
-        if (r.success) this.estados = r.data; 
+        if (r.success) {
+          this.estados = r.data;
+          console.log('✅ Estados cargados:', this.estados.length);
+        }
         this.cargandoDatos = false;
       },
       error: (err) => {
-        console.error('Error cargando estados:', err);
+        console.error('❌ Error cargando estados:', err);
         this.cargandoDatos = false;
       }
     });
@@ -139,7 +173,7 @@ export class CitaModalComponent implements OnInit {
     if (this.citaForm.valid) {
       const v = this.citaForm.value;
       const citaData: Partial<Cita> = {
-        observacionesCita: v.observacionesCita,
+        observacionesCita: v.observacionesCita?.trim(),
         usuarioTecnico: { idUsuario: v.idUsuarioTecnico },
         usuarioCreo: { idUsuario: v.idUsuarioCreo },
         franjaHoraria: { idFranja: v.idFranja },
@@ -151,13 +185,38 @@ export class CitaModalComponent implements OnInit {
   }
 
   onClose(): void {
+    this.citaForm.reset({
+      observacionesCita: '',
+      idUsuarioTecnico: null,
+      idUsuarioCreo: null,
+      idFranja: null,
+      idLugar: null,
+      nombreEc: null
+    });
     this.closeModal.emit();
   }
 
-  get observacionesCita() { return this.citaForm.get('observacionesCita'); }
-  get idUsuarioTecnico() { return this.citaForm.get('idUsuarioTecnico'); }
-  get idUsuarioCreo() { return this.citaForm.get('idUsuarioCreo'); }
-  get idFranja() { return this.citaForm.get('idFranja'); }
-  get idLugar() { return this.citaForm.get('idLugar'); }
-  get nombreEc() { return this.citaForm.get('nombreEc'); }
+  get observacionesCita() { 
+    return this.citaForm.get('observacionesCita'); 
+  }
+  
+  get idUsuarioTecnico() { 
+    return this.citaForm.get('idUsuarioTecnico'); 
+  }
+  
+  get idUsuarioCreo() { 
+    return this.citaForm.get('idUsuarioCreo'); 
+  }
+  
+  get idFranja() { 
+    return this.citaForm.get('idFranja'); 
+  }
+  
+  get idLugar() { 
+    return this.citaForm.get('idLugar'); 
+  }
+  
+  get nombreEc() { 
+    return this.citaForm.get('nombreEc'); 
+  }
 }

@@ -1,6 +1,6 @@
-// src/app/components/modals/cita-servicio-modal/cita-servicio-modal.component.ts
+// cita-servicios-modal.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitaServicio } from '../../../services/citaServicioService';
 import { CitasService } from '../../../services/citasService';
@@ -13,7 +13,7 @@ import { ServiciosService } from '../../../services/serviciosService';
   templateUrl: './cita-servicios-modal.html',
   styleUrls: ['./cita-servicios-modal.css']
 })
-export class CitaServicioModalComponent implements OnInit {
+export class CitaServicioModalComponent implements OnInit, OnChanges {
   @Input() citaServicio: CitaServicio | null = null;
   @Input() isOpen: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
@@ -36,10 +36,22 @@ export class CitaServicioModalComponent implements OnInit {
     });
   }
 
+  // Se mantiene ngOnInit para cargar datos de selects
   ngOnInit(): void {
     this.cargarDatos();
-    
-    if (this.citaServicio) {
+  }
+
+  // AGREGADO: Detectar cambios en los inputs
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['citaServicio'] || changes['isOpen']) {
+      this.actualizarFormulario();
+    }
+  }
+
+  // NUEVO: Método para actualizar el formulario según el modo
+  private actualizarFormulario(): void {
+    if (this.citaServicio && this.isOpen) {
+      // Modo EDICIÓN
       this.isEditMode = true;
       this.citaServicioForm.patchValue({
         citaEnIntermedio: this.citaServicio.citaEnIntermedio,
@@ -50,26 +62,73 @@ export class CitaServicioModalComponent implements OnInit {
       // En modo edición, las PKs no se pueden cambiar
       this.citaServicioForm.get('citaEnIntermedio')?.disable();
       this.citaServicioForm.get('servicioEnIntermedio')?.disable();
+    } else if (this.isOpen) {
+      // Modo CREACIÓN
+      this.isEditMode = false;
+      this.citaServicioForm.reset({
+        citaEnIntermedio: null,
+        servicioEnIntermedio: null,
+        cantidadSer: 1
+      });
+      
+      // Habilitar todos los campos
+      this.citaServicioForm.get('citaEnIntermedio')?.enable();
+      this.citaServicioForm.get('servicioEnIntermedio')?.enable();
     }
   }
 
   cargarDatos(): void {
-    this.citasService.obtenerTodos().subscribe(r => { if (r.success) this.citas = r.data; });
-    this.serviciosService.obtenerTodos().subscribe(r => { if (r.success) this.servicios = r.data; });
+    this.citasService.obtenerTodos().subscribe({
+      next: (r) => {
+        if (r.success) {
+          this.citas = r.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar citas:', error);
+      }
+    });
+
+    this.serviciosService.obtenerTodos().subscribe({
+      next: (r) => {
+        if (r.success) {
+          this.servicios = r.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar servicios:', error);
+      }
+    });
   }
 
   onSubmit(): void {
     if (this.citaServicioForm.valid) {
-      const formValue = this.isEditMode ? this.citaServicioForm.getRawValue() : this.citaServicioForm.value;
+      const formValue = this.isEditMode 
+        ? this.citaServicioForm.getRawValue() 
+        : this.citaServicioForm.value;
+      
       this.saveCitaServicio.emit(formValue);
     }
   }
 
   onClose(): void {
+    this.citaServicioForm.reset({
+      citaEnIntermedio: null,
+      servicioEnIntermedio: null,
+      cantidadSer: 1
+    });
     this.closeModal.emit();
   }
 
-  get citaEnIntermedio() { return this.citaServicioForm.get('citaEnIntermedio'); }
-  get servicioEnIntermedio() { return this.citaServicioForm.get('servicioEnIntermedio'); }
-  get cantidadSer() { return this.citaServicioForm.get('cantidadSer'); }
+  get citaEnIntermedio() { 
+    return this.citaServicioForm.get('citaEnIntermedio'); 
+  }
+  
+  get servicioEnIntermedio() { 
+    return this.citaServicioForm.get('servicioEnIntermedio'); 
+  }
+  
+  get cantidadSer() { 
+    return this.citaServicioForm.get('cantidadSer'); 
+  }
 }

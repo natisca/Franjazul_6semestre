@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServiceForm } from '../service-form/service-form';
 import { AuthService } from '../../../services/authService';
+import { CertificadoModalComponent } from '../certificado-form/certificado-form';
 
 interface Service {
   icon: string;
@@ -16,13 +17,14 @@ interface Service {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ServiceForm],
+  imports: [CommonModule, ServiceForm, CertificadoModalComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 export class home {
 
   mostrarForm = false;
+  mostrarFormCertificado = false;
 
   services: Service[] = [
     {
@@ -98,8 +100,33 @@ export class home {
     this.mostrarForm = true;
   }
 
+
+  //Abrir el form para pedir certificados
+
+
+  abrirModalCertificado(): void {
+    if (!this.authService.isAuthenticated()) {
+      alert('Solo los clientes pueden solicitar certificados');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser || currentUser.cargo.toUpperCase() !== 'CLIENTE') {
+      alert('Solo los clientes pueden solicitar certificados');
+      return;
+    }
+
+    this.mostrarFormCertificado = true;
+
+  }
+
   cerrarForm(): void {
     this.mostrarForm = false;
+  }
+
+  cerrarFormCertificado(): void {
+    this.mostrarFormCertificado = false;
   }
 
 }

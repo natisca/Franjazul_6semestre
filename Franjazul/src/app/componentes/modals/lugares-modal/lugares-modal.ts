@@ -1,6 +1,5 @@
-
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Lugar } from '../../../services/lugaresService';
 import { TipoLugarService, TipoLugar } from '../../../services/tipoLugarService'; 
@@ -12,7 +11,7 @@ import { TipoLugarService, TipoLugar } from '../../../services/tipoLugarService'
   templateUrl: './lugares-modal.html',
   styleUrls: ['./lugares-modal.css']
 })
-export class LugarModalComponent implements OnInit {
+export class LugarModalComponent implements OnInit, OnChanges {
   @Input() lugar: Lugar | null = null;
   @Input() lugares: Lugar[] = []; // Para el select de lugar padre
   @Input() isOpen: boolean = false;
@@ -36,16 +35,37 @@ export class LugarModalComponent implements OnInit {
     });
   }
 
+  // Se mantiene ngOnInit para cargar datos de selects
   ngOnInit(): void {
     this.cargarTiposLugar();
-    
-    if (this.lugar) {
+  }
+
+  // Detectar cambios en los inputs
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['lugar'] || changes['isOpen']) {
+      this.actualizarFormulario();
+    }
+  }
+
+  //Método para actualizar el formulario según el modo
+  private actualizarFormulario(): void {
+    if (this.lugar && this.isOpen) {
+      // Modo EDICIÓN
       this.isEditMode = true;
       this.lugarForm.patchValue({
         nombreLugar: this.lugar.nombreLugar,
         direccionLugar: this.lugar.direccionLugar,
-        idTipoLugar: this.lugar.tipoLugar.idTl,
+        idTipoLugar: this.lugar.tipoLugar?.idTl || null,
         idLugarPadre: this.lugar.lugarPadre?.idLugar || null
+      });
+    } else if (this.isOpen) {
+      // Modo CREACIÓN
+      this.isEditMode = false;
+      this.lugarForm.reset({
+        nombreLugar: '',
+        direccionLugar: '',
+        idTipoLugar: null,
+        idLugarPadre: null
       });
     }
   }
@@ -56,10 +76,12 @@ export class LugarModalComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.tiposLugar = response.data;
+          console.log('✅ Tipos de lugar cargados:', this.tiposLugar.length);
         }
         this.cargandoTiposLugar = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('❌ Error cargando tipos de lugar:', error);
         this.cargandoTiposLugar = false;
       }
     });
@@ -78,8 +100,8 @@ export class LugarModalComponent implements OnInit {
       const formValue = this.lugarForm.value;
       
       const lugarData: Partial<Lugar> = {
-        nombreLugar: formValue.nombreLugar,
-        direccionLugar: formValue.direccionLugar,
+        nombreLugar: formValue.nombreLugar?.trim(),
+        direccionLugar: formValue.direccionLugar?.trim(),
         tipoLugar: {
           idTl: formValue.idTipoLugar
         },
@@ -93,11 +115,28 @@ export class LugarModalComponent implements OnInit {
   }
 
   onClose(): void {
+    this.lugarForm.reset({
+      nombreLugar: '',
+      direccionLugar: '',
+      idTipoLugar: null,
+      idLugarPadre: null
+    });
     this.closeModal.emit();
   }
 
-  get nombreLugar() { return this.lugarForm.get('nombreLugar'); }
-  get direccionLugar() { return this.lugarForm.get('direccionLugar'); }
-  get idTipoLugar() { return this.lugarForm.get('idTipoLugar'); }
-  get idLugarPadre() { return this.lugarForm.get('idLugarPadre'); }
+  get nombreLugar() { 
+    return this.lugarForm.get('nombreLugar'); 
+  }
+  
+  get direccionLugar() { 
+    return this.lugarForm.get('direccionLugar'); 
+  }
+  
+  get idTipoLugar() { 
+    return this.lugarForm.get('idTipoLugar'); 
+  }
+  
+  get idLugarPadre() { 
+    return this.lugarForm.get('idLugarPadre'); 
+  }
 }

@@ -1,6 +1,5 @@
-
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Perfil } from '../../../services/perfilesService'; 
 import { Rol, RolesService } from '../../../services/rolesService';
@@ -12,7 +11,7 @@ import { Rol, RolesService } from '../../../services/rolesService';
   templateUrl: './perfil-modal.html',
   styleUrls: ['./perfil-modal.css']
 })
-export class PerfilModalComponent implements OnInit {
+export class PerfilModalComponent implements OnInit, OnChanges {
   @Input() perfil: Perfil | null = null;
   @Input() isOpen: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
@@ -34,15 +33,35 @@ export class PerfilModalComponent implements OnInit {
     });
   }
 
+  //Se mantiene ngOnInit para cargar datos de selects
   ngOnInit(): void {
     this.cargarRoles();
-    
-    if (this.perfil) {
+  }
+
+  //Detectar cambios en los inputs
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['perfil'] || changes['isOpen']) {
+      this.actualizarFormulario();
+    }
+  }
+
+  //Método para actualizar el formulario según el modo
+  private actualizarFormulario(): void {
+    if (this.perfil && this.isOpen) {
+      // Modo EDICIÓN
       this.isEditMode = true;
       this.perfilForm.patchValue({
         nombrePer: this.perfil.nombrePer,
         descripcionPer: this.perfil.descripcionPer,
-        idRol: this.perfil.rol.idRol
+        idRol: this.perfil.rol?.idRol || null
+      });
+    } else if (this.isOpen) {
+      // Modo CREACIÓN
+      this.isEditMode = false;
+      this.perfilForm.reset({
+        nombrePer: '',
+        descripcionPer: '',
+        idRol: null
       });
     }
   }
@@ -53,10 +72,12 @@ export class PerfilModalComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.roles = response.data;
+          console.log('✅ Roles cargados:', this.roles.length);
         }
         this.cargandoRoles = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('❌ Error cargando roles:', error);
         this.cargandoRoles = false;
       }
     });
@@ -66,8 +87,8 @@ export class PerfilModalComponent implements OnInit {
     if (this.perfilForm.valid) {
       const formValue = this.perfilForm.value;
       const perfilData: Partial<Perfil> = {
-        nombrePer: formValue.nombrePer,
-        descripcionPer: formValue.descripcionPer,
+        nombrePer: formValue.nombrePer?.trim(),
+        descripcionPer: formValue.descripcionPer?.trim(),
         rol: {
           idRol: formValue.idRol
         }
@@ -77,6 +98,11 @@ export class PerfilModalComponent implements OnInit {
   }
 
   onClose(): void {
+    this.perfilForm.reset({
+      nombrePer: '',
+      descripcionPer: '',
+      idRol: null
+    });
     this.closeModal.emit();
   }
 

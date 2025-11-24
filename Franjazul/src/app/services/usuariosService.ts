@@ -41,7 +41,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class UsuariosService {
-  private apiUrl = 'http://localhost:8080/api/usuarios';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/usuarios';
 
   constructor(private http: HttpClient) { }
 

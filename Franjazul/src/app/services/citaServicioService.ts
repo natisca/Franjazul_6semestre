@@ -26,7 +26,7 @@ export interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class CitaServicioService {
-  private apiUrl = 'http://localhost:8080/api/cita-servicio';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/cita-servicio';
 
   constructor(private http: HttpClient) { }
 

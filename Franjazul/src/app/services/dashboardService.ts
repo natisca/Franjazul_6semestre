@@ -14,7 +14,7 @@ import {
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost:8080/api/dashboard';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/dashboard';
 
   constructor(private http: HttpClient) {}
 

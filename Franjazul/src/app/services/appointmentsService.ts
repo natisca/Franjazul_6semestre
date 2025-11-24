@@ -32,7 +32,7 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class AppointmentsService {
-  private apiUrl = 'http://localhost:8080/api/citas';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/citas';
 
   constructor(private http: HttpClient) { }
 

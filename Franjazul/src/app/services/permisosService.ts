@@ -40,7 +40,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class PermisosService {
-  private apiUrl = 'http://localhost:8080/api/permisos';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/permisos';
 
   constructor(private http: HttpClient) { }
 

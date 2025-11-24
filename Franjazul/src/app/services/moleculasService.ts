@@ -28,7 +28,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class MoleculasService {
-  private apiUrl = 'http://localhost:8080/api/moleculas';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/moleculas';
 
   constructor(private http: HttpClient) { }
 

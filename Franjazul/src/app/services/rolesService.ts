@@ -32,7 +32,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class RolesService {
-  private apiUrl = 'http://localhost:8080/api/roles';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/roles';
 
   constructor(private http: HttpClient) { }
 

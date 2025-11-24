@@ -35,7 +35,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class FormulariosService {
-  private apiUrl = 'http://localhost:8080/api/formularios';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/formularios';
 
   constructor(private http: HttpClient) { }
 

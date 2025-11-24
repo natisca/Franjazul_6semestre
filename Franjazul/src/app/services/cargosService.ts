@@ -28,7 +28,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class CargosService {
-  private apiUrl = 'http://localhost:8080/api/cargos';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/cargos';
 
   constructor(private http: HttpClient) { }
 

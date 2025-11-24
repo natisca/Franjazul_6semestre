@@ -13,7 +13,7 @@ export interface EstadoCita {
   providedIn: 'root'
 })
 export class EstadoCitaService {
-  private apiUrl = 'http://localhost:8080/api/estado-cita';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/estado-cita';
 
   constructor(private http: HttpClient) { }
 

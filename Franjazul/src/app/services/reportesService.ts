@@ -13,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class ReportesService {
-  private apiUrl = 'http://localhost:8080/api/reportes';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/reportes';
 
   constructor(private http: HttpClient) {}
 

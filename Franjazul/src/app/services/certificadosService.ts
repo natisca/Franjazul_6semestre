@@ -30,7 +30,7 @@ export interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class CertificadosService {
-  private apiUrl = 'http://localhost:8080/api/certificados';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/certificados';
 
   constructor(private http: HttpClient) { }
 

@@ -34,7 +34,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
   providedIn: 'root'
 })
 export class PerfilesService {
-  private apiUrl = 'http://localhost:8080/api/perfiles';
+  private apiUrl = 'https://franjazul-api.onrender.com/api/perfiles';
 
   constructor(private http: HttpClient) { }
 
